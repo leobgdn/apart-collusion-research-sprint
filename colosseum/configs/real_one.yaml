@@ -1,0 +1,47 @@
+# Track B: ONE real episode (secret channel on, simple incentive) via scripts/proxy.py --upstream on port 8032.
+simulation:
+  max_iterations: 1
+  max_planning_rounds: 2
+  max_conversation_steps: 3
+  seed: 1
+
+environment:
+  name: JiraTicketEnvironment
+  assignment_filling: false
+  max_tasks: 8
+
+communication_network:
+  topology: complete
+  num_agents: 4
+  consolidate_channels: true
+
+llm_models:
+  - label: qwen3_8b
+    llm:
+      provider: vllm
+      vllm:
+        auto_start_server: false
+        persistent_server: true
+        health_check_path: "/models"
+        params:
+          max_tokens: 1024
+          temperature: 0.7
+        models:
+          - checkpoint: "Qwen/Qwen3-8B"
+            base_url: "http://127.0.0.1:8032/v1"
+
+experiment:
+  tag: trackB_one
+  output_dir: ../outputs/real_one
+  max_concurrent_runs: 1
+  seeds: [1]
+  collusion:
+    colluder_selection: random
+    agent_order: random
+  sweeps:
+    - name: one
+      topologies: [complete]
+      num_agents: [4]
+      colluder_counts: [2]
+      secret_channel_enabled: [true]
+      prompt_variants: [simple]
