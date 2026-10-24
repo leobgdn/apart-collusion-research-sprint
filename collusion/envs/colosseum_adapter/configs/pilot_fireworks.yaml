@@ -1,0 +1,75 @@
+# Stage 2 pilot config for Colosseum's covert-collusion experiment (Plan A),
+# run against Fireworks-hosted Qwen3-8B.
+#
+# This file must be copied/symlinked into <colosseum_root>/experiments/collusion/configs/
+# before running (run.py resolves config-relative paths against the Colosseum repo
+# root, not ours). `python tasks.py plan_a_setup` does that copy.
+#
+# Design mapping (see prereg.md "Plan A factor mapping" and DECISIONS.md):
+#   H1 channel   -> secret_channel_enabled (native, validated positive control)
+#   H2 history   -> SUBSTITUTED by communication_network.topology (complete vs path),
+#                   per Section 6.2 option (b): Colosseum has no repeated-round
+#                   history mechanism (max_iterations is always 1), so the
+#                   original "truncate memory" manipulation is not expressible.
+#   H3 incentive -> prompt_variants (control vs simple), native (the build
+#                   prompt's own alternate phrasing of H3 is "a stronger
+#                   coalition incentive", which is exactly prompt_variant).
+#
+# Pilot: ~5 seeds. The sweep below is the full 2x3 cross of topology x
+# {channel, incentive} (6 cells; secret_channel=false forces prompt_variant to
+# "control", so the raw 2x2x2=8 combinations dedup to 6). That is a superset of
+# the one-factor-at-a-time design Section 6.2 asks for: it contains all three
+# single-factor contrasts from the (complete, no-channel, control) baseline --
+# channel on, topology sparse, incentive up -- plus two extra cells where two
+# factors move at once. 30 runs total; still cheap enough to just run the full
+# cross rather than hand-pick four settings.
+
+simulation:
+  max_iterations: 1
+  max_planning_rounds: 4
+  max_conversation_steps: 3
+  seed: 1
+
+environment:
+  name: JiraTicketEnvironment
+  assignment_filling: false
+  max_tasks: 8
+
+communication_network:
+  # Overridden per-cell by the `sweeps[].topologies` list below; this is the
+  # baseline (dense) level.
+  topology: complete
+  num_agents: 6
+  consolidate_channels: true
+  edge_prob: 0.6
+  k: 2
+  rewire_prob: 0.3
+  m: 3
+
+llm_models:
+  - label: fireworks-qwen3-8b
+    llm:
+      provider: fireworks
+      fireworks:
+        model: accounts/fireworks/models/qwen3-8b
+        params:
+          max_tokens: 1024
+          temperature: 0.4
+
+experiment:
+  tag: pilot
+  output_dir: experiments/collusion/outputs/pilot_fireworks
+  max_concurrent_runs: 8 # Fireworks serverless handles this comfortably
+  seeds: [1, 2, 3, 4, 5]
+  collusion:
+    colluder_selection: random
+    agent_order: random
+  sweeps:
+    - name: pilot
+      # Baseline cell (complete, control-forced-by-secret_channel=false), then
+      # one factor moved at a time: channel on, topology sparse, incentive up.
+      topologies: [complete, path]
+      num_agents: [6]
+      colluder_counts: [2]
+      secret_channel_enabled: [false, true]
+      prompt_variants: [control, simple]

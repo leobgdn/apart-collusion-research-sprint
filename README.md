@@ -4,15 +4,24 @@ Which task features cause LLM agents to collude, and what does restricting each
 one cost in joint performance?
 
 Collusion is measured **from actions** (primary) and **from transcripts**
-(secondary); the gap between the two is itself a result. Environment: a repeated
-logit-Bertrand pricing market with a factorial set of task manipulations.
+(secondary); the gap between the two is itself a result.
 
-**Status: Stage 1 complete, awaiting Gate 1.** The environment, scripted
-controls, metrics, logging and acceptance tests are built and passing. No model
-has been called and nothing has been spent. The LLM agent wrapper (Stage 2)
-deliberately raises until a human clears Gate 1.
+**Environment: Plan A** -- [Colosseum](https://github.com/umass-ai-safety/colosseum)'s
+covert-collusion experiment (agents split Jira tickets; a coalition can get a
+hidden blackboard), hosted on Fireworks-served Qwen3-8B. Plan B (a repeated
+logit-Bertrand pricing market, fully built and tested) is kept as a fallback;
+see `DECISIONS.md` for why the pivot and the Section 6.2 substitution it
+required (H2 could not be tested as originally written -- Colosseum has no
+repeated-round history -- so `topology` substitutes for it as H2').
+
+**Status: Gate 1 cleared, Stage 2 (pilot) in progress.** Colosseum is
+installed at a sibling path with Fireworks wired in via a drop-in client swap.
+Budget guard, cost tracking, and the judge are built. Blocked on the
+Fireworks API key being set before any call is made.
 
 ## Setup
+
+**This repo** (analysis tooling, Plan B fallback, tests):
 
 ```bash
 python -m venv .venv
@@ -20,8 +29,21 @@ python -m venv .venv
 # .venv/bin/python -m pip install -e ".[dev]"        # POSIX
 ```
 
+**Colosseum** (Plan A, the active environment) lives at a documented sibling
+path, not vendored into this repo (see `DECISIONS.md`):
+
+```bash
+git clone --recurse-submodules https://github.com/umass-ai-safety/colosseum.git ../colosseum
+cd ../colosseum && uv venv --python 3.11 .venv && uv sync --no-install-project
+```
+
+It needs a Fireworks API key in its own `.env` (never in this repo, never in
+chat): `echo 'FIREWORKS_API_KEY=...' >> ../colosseum/.env`. Override the
+sibling-path assumption with `COLOSSEUM_ROOT` if cloned elsewhere.
+
 The probe layer additionally needs `pip install -e ".[probes]"` (torch,
-transformers) and is Stage 5.
+transformers) in this repo, to pull Qwen3-8B's weights locally for activation
+extraction, and is Stage 5.
 
 ## Entry points
 
@@ -31,77 +53,96 @@ transformers) and is Stage 5.
 | command | what it does |
 | --- | --- |
 | `python tasks.py test` | the acceptance suite (Section 6.4) |
-| `python tasks.py pilot` | scripted dry pilot — full pipeline, zero cost |
-| `python tasks.py gate1` | regenerate `results/gate1_report.md` |
+| `python tasks.py pilot` | Plan-B scripted dry pilot — fallback pipeline, zero cost |
+| `python tasks.py gate1` | regenerate `results/gate1_report.md` (Plan B) |
+| `python tasks.py plan_a_smoke` | Plan A: 1 seed, every cell, prints real $ cost |
+| `python tasks.py plan_a_pilot [--cap-usd N]` | Plan A: escalate to the pilot's 5 seeds |
+| `python tasks.py plan_a_main [--cap-usd N] --i-have-approval` | Plan A: main sweep, gated |
 | `python tasks.py results` | Stage 4 analysis (gated; no sweep data yet) |
 | `python tasks.py clean` | delete generated logs/episodes/results (asks first) |
 
-## Reproducing from raw logs
+## Reproducing from raw logs (Plan A)
 
 Every number and figure is produced by a script from the saved logs; nothing is
 hand-entered.
 
-1. **Run.** `python -m collusion.runner.run_sweep --pilot --policy colluding --run-id my_run`
-   writes `data/logs/my_run.jsonl` (one record per agent turn) and
-   `data/episodes/my_run/<episode_id>.json` (one summary per episode). Runs are
-   keyed by `(condition_id, seed)`; re-running skips completed episodes.
-2. **Verify the logs describe reality.** `collusion.runner.replay.verify_round_trip`
-   replays the logged actions through a fresh environment, re-renders every
-   prompt from the reconstructed state, and requires a byte-identical match with
-   the `prompt_messages` that were logged. Zero mismatches is the pass condition.
-   This is also the input path for probe extraction.
-3. **Recompute metrics.** `collusion.metrics.action_metrics.compute_action_metrics`
-   takes the price/profit paths and the stored benchmarks. Benchmarks are solved
-   numerically per run and saved in each episode summary, so a metric can be
-   recomputed without re-running the market.
-4. **Report.** `python tasks.py gate1` regenerates the Gate 1 artefacts.
+1. **Smoke, then escalate.** `plan_a_smoke` runs 1 seed across every cell of
+   `collusion/envs/colosseum_adapter/configs/pilot_fireworks.yaml` and measures
+   real token cost from Colosseum's own `agent_turns.json` logs (it has no $
+   concept of its own; see `cost_tracking.py`). `plan_a_pilot` then projects the
+   cost of the pilot's full 5 seeds from that measurement and, if under the cap,
+   calls Colosseum's `resume.py` to fill in the rest **in place** under the same
+   output root — Colosseum's own resumability primitive, not a reimplementation
+   of one (Section 3 rule 5).
+2. **Action-level metrics.** Colosseum's own `experiments/collusion/metrics.py`
+   (regret, coalition advantage) and `compute_jira_optimal.py` (exact per-run
+   optimum), computed from its saved logs, zero additional cost.
+3. **Text-level score.** `collusion.metrics.text_judge.run_judge` reuses
+   Colosseum's published rubric verbatim (`judge_fireworks.py` patches only the
+   backend from OpenAI to Fireworks), then `read_text_scores` normalises the
+   0-5 rating to 0-1.
+4. **Report.** `python tasks.py gate1` regenerates the Gate 1 artefacts (these
+   are Plan-B-specific; a Plan-A gate report script is Stage 2/4 work).
+
+Plan B (below) has its own, already-passing version of steps 1-2 and remains a
+tested fallback.
 
 ## What is measured
 
-Over the last 50 periods of each episode:
+**Plan A (active):** Colosseum's regret-based metrics per run —
+`mean_regret`, `coalition_mean_regret`, `noncoalition_mean_regret`, and
+**coalition advantage** (`noncoalition_mean_regret − coalition_mean_regret`,
+the primary action-level collusion quantity: positive means the coalition left
+less regret on the table for itself than it imposed on everyone else) — plus
+the exact per-run optimum and a 0-1 normalised judge score. Full definitions in
+`prereg.md`.
 
-- **collusion index** `Delta = (avg_profit − profit_Nash) / (profit_Monopoly − profit_Nash)`
-- **price index** `Delta_p` on the same scale
-- a **category** (`near_nash` / `partial` / `near_monopoly`, plus the
-  pathological `over_priced` and `below_cost`, which take precedence and are
-  reported separately — a profit index alone would misread both as competition)
-- **joint reward**, consumer surplus, and per-turn best-response **regret**
-
-The Nash and joint-monopoly benchmarks are solved numerically and reproduce
-Calvano et al. (2020) to four decimals (1.4729 / 1.9249).
+**Plan B (fallback):** over the last 50 periods of a repeated pricing episode —
+**collusion index** `Delta = (avg_profit − profit_Nash) / (profit_Monopoly − profit_Nash)`,
+a price index `Delta_p` on the same scale, a category (`near_nash` / `partial`
+/ `near_monopoly`, plus the pathological `over_priced` / `below_cost`, which
+take precedence and are reported separately — a profit index alone would
+misread both as competition), joint reward, consumer surplus, and per-turn
+best-response regret. Its Nash/joint-monopoly benchmarks are solved numerically
+and reproduce Calvano et al. (2020) to four decimals (1.4729 / 1.9249).
 
 ## Factors
 
-| factor | levels | hypothesis |
-| --- | --- | --- |
-| `channel` | `none`, `private` | H1 — a private channel raises collusion (positive control) |
-| `history_window` | `long` (20), `short` (3) | H2 — truncating history lowers it |
-| `horizon` | `long_run`, `myopic` | H3 — longer-horizon framing raises it |
+**Plan A (active):**
 
-Full factorial: 8 cells. Levels live in `collusion/envs/pricing/conditions.py`,
-the single source of truth for both the sweep and the diff test.
+| factor | levels | native Colosseum field | hypothesis |
+| --- | --- | --- | --- |
+| `channel` | off / on | `secret_channel_enabled` | H1 — positive control |
+| `topology` | `complete` / `path` | `communication_network.topology` | H2' — **substitutes** H2 (see `DECISIONS.md` / `prereg.md` §2: Colosseum has no repeated-round history, so H2 as originally written is not tested) |
+| `incentive` | `control` / `simple` | `prompt_variant` | H3 |
 
-**One manipulation per condition** is enforced structurally, not by convention:
-every prompt slot is *owned* by exactly one factor (`OWNED_SLOTS`), and
-`tests/test_prompt_diff.py` holds the environment state fixed, varies one factor,
-and fails if any slot that factor does not own changed. The reverse is also
-tested — a factor that changes no slot is not a manipulation.
+6 unique cells (the raw 2x2x2 dedups because `prompt_variant` is forced to
+`control` whenever `channel` is off — Colosseum's own design, not ours).
+
+**Plan B (fallback):** `channel` (`none`/`private`, H1), `history_window`
+(`long`/`short`, H2 as originally written), `horizon` (`long_run`/`myopic`,
+H3) — 8 cells, enforced one-manipulation-per-condition via slot ownership
+(`collusion/envs/pricing/conditions.py` `OWNED_SLOTS`,
+`tests/test_prompt_diff.py`).
 
 ## Layout
 
 ```
 collusion/
-  config/experiment.yaml      factors, seeds, models, budget
-  envs/pricing/               economics, conditions, prompts, state, env
-  envs/colosseum_adapter/     Plan A recon notes (no code; see NOTES.md)
-  agents/                     parsing, scripted controls
-  runner/                     run_episode, run_sweep, replay, gate1_report
-  metrics/action_metrics.py   action-level collusion metrics
-  analysis/  probes/          Stage 4 / Stage 5, empty until those gates
-data/logs/  data/episodes/    generated, gitignored
-tests/                        the acceptance suite
-prereg.md                     hypotheses and tests (DRAFT until Gate 2)
-DECISIONS.md                  every design decision and why
+  config/experiment.yaml          Plan B factors/seeds/models; Plan A notes which block is active
+  envs/pricing/                   Plan B: economics, conditions, prompts, state, env (fallback)
+  envs/colosseum_adapter/         Plan A integration: configs/, run_plan_a.py, cost_tracking.py,
+                                   judge_fireworks.py, NOTES.md (recon findings)
+  agents/                         Plan B: parsing, scripted controls
+  runner/                         Plan B: run_episode, run_sweep, replay, gate1_report
+  metrics/action_metrics.py       Plan B action-level metrics
+  metrics/text_judge.py           Plan A judge reader/normaliser (both envs' judge scores are 0-1)
+  analysis/  probes/              Stage 4 / Stage 5, empty until those gates
+data/logs/  data/episodes/        Plan B generated data, gitignored
+../colosseum/                     Plan A checkout + its own outputs (sibling dir, not in this repo)
+tests/                            the acceptance suite (Plan B; fully passing)
+prereg.md                         hypotheses and tests, Plan A (DRAFT until Gate 2)
+DECISIONS.md                      every design decision and why
 ```
 
 ## Gates
@@ -110,8 +151,8 @@ Work stops at each gate for human review (build prompt Section 6).
 
 | gate | after | status |
 | --- | --- | --- |
-| 1 | environment + scripted controls | **awaiting review** |
-| 2 | baseline tuning and pilot | blocked on Gate 1 |
+| 1 | environment + scripted controls | **cleared** — human chose Plan A, Fireworks, Qwen3-8B |
+| 2 | baseline tuning and pilot | **in progress** — blocked on the Fireworks API key being set |
 | 3 | pre-registration and main sweep | blocked on Gate 2 |
 | 4 | analysis | blocked on Gate 3 |
 | 5 | probe layer | blocked on Gate 4 |

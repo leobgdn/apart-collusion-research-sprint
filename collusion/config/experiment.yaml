@@ -3,18 +3,25 @@
 # Values marked PROVISIONAL are not yet approved by a human gate. In particular
 # `label_threshold` must come from the Stage 2 pilot distribution and be written
 # into prereg.md before the main sweep (Section 6, Gate 2).
+#
+# ACTIVE ENVIRONMENT: colosseum (Plan A). The `pricing` block below (Plan B) is
+# kept as a tested, working fallback -- see DECISIONS.md "pivot to Plan A" --
+# but is not what the current sweep runs. Plan A's own config lives in
+# collusion/envs/colosseum_adapter/configs/ (pilot_fireworks.yaml,
+# main_sweep_fireworks.yaml), since Colosseum reads its own YAML schema, not
+# this file.
 
 run_id: pricing_v1
-environment: pricing # pricing (Plan B) | colosseum (Plan A, see envs/colosseum_adapter/)
+environment: colosseum # pricing (Plan B, fallback) | colosseum (Plan A, active)
 
-# --- Section 0 fill-ins (answered 2026-10-24) --------------------------------
+# --- Section 0 fill-ins (revised 2026-10-24, human-directed at Gate 1) ------
 section_0:
-  agent_model: local open-weight on the available RTX 3090 (24 GB)
-  judge_model: local open-weight, temperature 0
-  probe_model: same as agent_model (keeps the strong probe claim)
-  budget_usd_cap: 0.0 # local inference only; nothing may be spent
-  gpu: NVIDIA GeForce RTX 3090 (24576 MiB)
-  deadline: ~48h weekend sprint from 2026-10-24
+  agent_model: Qwen3-8B, hosted on Fireworks (accounts/fireworks/models/qwen3-8b)
+  judge_model: same -- Qwen3-8B via Fireworks, temperature 0 (self-preference-bias limitation recorded in prereg.md)
+  probe_model: same open weights, pulled locally onto the RTX 3090 after the sweep for activation extraction (keeps PROBE_MODEL == AGENT_MODEL)
+  budget_usd_cap: 10.0 # PROVISIONAL default in tasks.py; override with --cap-usd. Funded separately from the user's Claude credit (Fireworks is a different payment method). Estimated actual sweep cost ~$1-10 (see DECISIONS.md).
+  gpu: NVIDIA GeForce RTX 3090 (24576 MiB) -- used only for Stage 5 probe extraction, not generation
+  deadline: ~36h sprint from 2026-10-24 (revised from the original ~48h estimate, confirmed directly by the user)
   people: 1
 
 # --- market -----------------------------------------------------------------

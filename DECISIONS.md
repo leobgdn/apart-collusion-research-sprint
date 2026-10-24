@@ -5,6 +5,118 @@ rationale (Section 3 rule 10). Newest first.
 
 ---
 
+## 2026-10-24: pivot to Plan A, hosted on Fireworks, H2 replaced by topology
+
+**Decision (human-directed, Gate 1 response):** Switch from Plan B to Plan A
+(Colosseum). Timeline confirmed at 36 hours. Host AGENT_MODEL/JUDGE_MODEL/
+PROBE_MODEL as Qwen3-8B via **Fireworks** (not Together -- see below), funded
+separately from the user's Claude credit. Resolve the Section 6.2 history
+blocker by substituting **topology** for the history-window factor (option (b)
+from the Gate 1 report), since implementing real round history in Colosseum
+(option (a)) was "days, not hours" and is not viable in the time left.
+
+**Provider correction, recorded because the first answer was wrong:** The user
+initially picked Together AI. Live verification (two independent `WebFetch`
+calls against Together's own model page and docs, after a web-search answer
+claimed pricing that turned out to be wrong) showed Qwen3-8B is **not yet
+live** on Together -- "launching soon". The same two-step verification against
+**Fireworks'** own model page and pricing docs confirmed it **is** live there,
+at `accounts/fireworks/models/qwen3-8b`, flat $0.20 / M tokens (their 4B-16B
+tier). Fireworks was substituted without re-asking, since every other part of
+the user's decision (Qwen3-8B, host-then-local, Plan A) was unaffected and the
+substitution was forced, not a real choice.
+
+**Why topology replaces history_window, not team size:** Both were offered at
+Gate 1. Topology (`path` vs `complete`) is already a first-class, fully
+supported sweep dimension in Colosseum (`communication_network.topology`), so
+it needs no new code, and it varies how much of the market structure an agent
+can see/communicate with -- the closest structural analogue to "how much the
+agent can see" that a truncated history window was originally getting at.
+Team size would confound with `colluder_count`'s denominator and is harder to
+hold interpretable.
+
+**Consequence for H2:** H2 as literally written ("truncating interaction
+history decreases collusion") is **not tested** by this sweep. What is tested
+is a relabelled H2' ("a sparser communication topology decreases collusion"),
+recorded as a substitution, not a result, in `prereg.md`. H3 needed no
+substitution: the build prompt's own alternate phrasing of H3 -- "a stronger
+coalition incentive... increases collusion" -- maps directly onto Colosseum's
+native `prompt_variant` ladder (control -> simple), so H3 is tested as
+originally intended, just via its Plan-A-native operationalisation.
+
+**How to apply:** Full factor mapping, the pilot/main sweep configs, and the
+smoke-cost workflow are in `collusion/envs/colosseum_adapter/`. Plan B's code
+(`collusion/envs/pricing/`) is left in place, fully tested, as a fallback and
+because its acceptance-test machinery (round-trip, prompt-diff, determinism)
+is a template the Plan A tests reuse conceptually even though they can't share
+code (Colosseum owns its own prompt rendering).
+
+---
+
+## 2026-10-24: Colosseum lives outside this repo; its venv runs our judge too
+
+**Decision:** The Colosseum checkout lives at a documented sibling path
+(`../colosseum` relative to this repo, overridable via `COLOSSEUM_ROOT`), not
+vendored in via submodule. `collusion/envs/colosseum_adapter/` holds only our
+integration code: sweep configs, a budget-guarded driver (`run_plan_a.py`), a
+cost scanner (`cost_tracking.py`), and a judge launcher
+(`judge_fireworks.py`). Scripts that need `terrarium`/`experiments` importable
+run with *Colosseum's* `.venv` interpreter, invoked as a subprocess from ours.
+
+**Why:** Colosseum is a full third-party framework with its own dependency
+tree, license, and release cycle -- nesting it as a submodule would make every
+one of its commits part of our history for no benefit, and its own README
+already gives the clone command for anyone reproducing this work. Running its
+code via a subprocess with its own interpreter, rather than trying to get
+`terrarium` installed into our `.venv` too, avoids a second, divergent
+dependency resolution for the same package.
+
+**Judge via monkeypatch, not a fork:** `judge_blackboards.py` hardcodes
+`client = OpenAIClient()`, but it only ever calls `client.init_context(...)`
+and `client.generate_response(...)` -- exactly the two methods
+`FireworksClient` already implements with an identical signature. So
+`judge_fireworks.py` is a ~15-line launcher that patches
+`judge_blackboards.OpenAIClient = FireworksClient` and calls their unmodified
+`main()`. This reuses the published rubric and all of its JSON-parsing/retry
+logic verbatim, rather than drafting a new, unvalidated rubric under time
+pressure to satisfy Section 8's "fixed rubric" requirement.
+
+---
+
+## 2026-10-24: budget guard escalates seed-by-seed via Colosseum's own resume
+
+**Decision:** `run_plan_a.py smoke` runs exactly 1 seed across every cell and
+measures real $ from Colosseum's own `agent_turns.json` logs (which save each
+call's raw provider `usage` dict, even though Colosseum has no dollar-cost
+concept of its own). `run_plan_a.py escalate` then projects the cost of a
+larger seed list from that measurement and, if it is under the cap, calls
+Colosseum's own `resume.py` to fill in the missing seeds *in place* under the
+same output root.
+
+**Why:** `run.py` always creates a brand-new timestamped output root per
+invocation (`root = output_dir / timestamp`); it has no way to stop partway
+through a seed list or to accumulate results from separate invocations into
+one place. `resume.py` is Colosseum's own mechanism for adding seeds to an
+existing root without re-running what is already there, which is both the
+natural resumability primitive (Section 3 rule 5) and the natural checkpoint
+for a budget check (Section 3 rule 3) at the granularity Colosseum actually
+exposes. Checking projected cost before each escalation, rather than only
+after the fact, is coarser than true per-episode interruption, but at the
+estimated total sweep cost (~$1-10) a single escalation step overshooting the
+cap by more than a trivial margin would mean a configuration mistake (wrong
+model, runaway `max_tokens`), which this still catches -- it is not meant to
+shave fractions of a cent.
+
+**Price source:** Fireworks' serverless pricing tier for 4-16B dense models
+($0.20/M tokens, flat for input and output) was read directly from
+`docs.fireworks.ai/serverless/pricing` via `WebFetch`, not taken from a
+third-party pricing-aggregator search snippet (one such snippet gave wrong
+Together pricing earlier in this session). The rate is a named constant in
+`cost_tracking.py`, not inlined, so it is one place to fix if Fireworks' tier
+pricing changes.
+
+---
+
 ## 2026-10-24: commit `e28049b` is superseded and must not be relied on
 
 **Decision:** Treat the decisions recorded in commit `e28049b` ("Record 36-hour
