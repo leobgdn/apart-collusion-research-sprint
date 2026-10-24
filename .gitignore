@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+data/logs/*
+data/episodes/*
+data/activations/*
+!data/logs/.gitkeep
+!data/episodes/.gitkeep
+results/*
+!results/.gitkeep
+.env
+*.npy
+*.pt
