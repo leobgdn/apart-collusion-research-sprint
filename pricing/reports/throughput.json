@@ -1,0 +1,58 @@
+{
+  "periods_per_episode": 80,
+  "levels": [
+    {
+      "concurrency_episodes": 8,
+      "elapsed_s": 179.732,
+      "requests": 994,
+      "prompt_tokens": 552307,
+      "completion_tokens": 62907,
+      "prefill_tok_per_s": 3072.945,
+      "decode_tok_per_s": 350.004,
+      "requests_per_s": 5.53,
+      "http_retries": 0,
+      "mean_latency_s": 2.744,
+      "p90_latency_s": 3.482,
+      "rounds_per_s": 2.765,
+      "seconds_per_episode": 231.4,
+      "episodes_per_hour": 124.4,
+      "gpu_memory_after": "21032 MiB, 24576 MiB, 99 %"
+    },
+    {
+      "concurrency_episodes": 16,
+      "elapsed_s": 182.067,
+      "requests": 1410,
+      "prompt_tokens": 778726,
+      "completion_tokens": 88511,
+      "prefill_tok_per_s": 4277.132,
+      "decode_tok_per_s": 486.144,
+      "requests_per_s": 7.744,
+      "http_retries": 0,
+      "mean_latency_s": 3.91,
+      "p90_latency_s": 5.1,
+      "rounds_per_s": 3.872,
+      "seconds_per_episode": 330.6,
+      "episodes_per_hour": 174.2,
+      "gpu_memory_after": "21032 MiB, 24576 MiB, 100 %"
+    },
+    {
+      "concurrency_episodes": 32,
+      "elapsed_s": 182.746,
+      "requests": 1782,
+      "prompt_tokens": 955223,
+      "completion_tokens": 108305,
+      "prefill_tok_per_s": 5227.058,
+      "decode_tok_per_s": 592.654,
+      "requests_per_s": 9.751,
+      "http_retries": 0,
+      "mean_latency_s": 6.232,
+      "p90_latency_s": 8.215,
+      "rounds_per_s": 4.876,
+      "seconds_per_episode": 525.1,
+      "episodes_per_hour": 219.4,
+      "gpu_memory_after": "21128 MiB, 24576 MiB, 100 %"
+    }
+  ],
+  "gpu_busy_created": "2026-10-24 17:55:38",
+  "gpu_busy_deleted": "2026-10-24 18:04:46"
+}

@@ -1,0 +1,87 @@
+# Experiment configuration for Track A (the repeated pricing game, local model).
+#
+# Values marked PROVISIONAL are not yet approved by a human gate. In particular
+# `label_threshold` and the main-sweep sizing come from the pilot at Gate 2.
+
+run_id: pilot_v1
+
+# --- Section 0 fill-ins (Phase 1 prompt) -------------------------------------
+section_0:
+  os: Windows 11 (model served from WSL2 Ubuntu via vLLM)
+  gpu: NVIDIA RTX 3090, 24 GB
+  agent_model: Qwen/Qwen3-8B, bf16, thinking off, local vLLM
+  judge_model: Qwen/Qwen3-8B (runs later, not in Phase 1; self-preference-bias limitation)
+  probe_model: Qwen/Qwen3-8B (same weights; activation extraction is a later phase)
+  budget: none in dollars; wall-clock guard instead (no external APIs)
+  submission_deadline: Monday 7 am local
+  generation_hard_stop: Sunday ~12:00 local (suggested)
+  pilot_time_cap_minutes: 90
+
+# --- market -----------------------------------------------------------------
+params:
+  n_sellers: 2
+  a: 2.0
+  a0: 0.0
+  c: 1.0
+  mu: 0.25
+
+env:
+  total_periods: 80 # overridden per design block below
+  demand_noise_sd: 0.0 # 0 keeps the market faithful to Calvano et al. (2020)
+  fallback_to_previous_price: true
+
+# --- design -----------------------------------------------------------------
+# Factor levels live in collusion/envs/pricing/conditions.py (single source of
+# truth). Cells: channel x history_window x horizon (8) + placebo baseline = 9.
+design:
+  include_horizon: true # F3 is the first thing to drop if throughput is low
+  pilot:
+    total_periods: 80
+    metric_window: 30 # last 30 rounds
+    seeds_per_batch: 5
+    n_batches: 1
+  main: # PROVISIONAL: sized at Gate 2 from measured throughput
+    total_periods: 80
+    metric_window: 30
+    seeds_per_batch: 2
+    n_batches: 10
+
+metrics:
+  label_threshold: null # PROVISIONAL - proposed from the pilot at Gate 2
+  label_threshold_sensitivity: []
+
+# --- models -----------------------------------------------------------------
+models:
+  agent:
+    provider: vllm_local # OpenAI-compatible endpoint; see ~/collusion_shared/endpoint.txt
+    name: Qwen/Qwen3-8B
+    dtype: bfloat16
+    max_new_tokens: 150
+    temperature: 0.7
+    top_p: 0.9
+    enable_thinking: false # sent as chat_template_kwargs; verified in serve/check_server.py
+    timeout_s: 180
+  judge: # not run in Phase 1
+    name: Qwen/Qwen3-8B
+    temperature: 0.0
+    independent_of_agent: false
+  probe: # not run in Phase 1
+    name: Qwen/Qwen3-8B
+    layer_fractions: [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+
+# --- scripted controls (no model calls) -------------------------------------
+scripted:
+  policies: [competitive, colluding]
+  noise_sd: 0.05
+
+# --- guards -----------------------------------------------------------------
+limits:
+  concurrency: 32 # concurrent episodes; each sends its sellers' requests in parallel
+  max_parse_retries: 2
+  # Phase 1 Section 8: stop and report above this parse-failure rate.
+  max_parse_failure_rate: 0.10
+
+paths:
+  logs_dir: data/logs
+  episodes_dir: data/episodes
+  results_dir: results
