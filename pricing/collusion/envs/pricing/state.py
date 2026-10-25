@@ -53,6 +53,8 @@ class Observation:
     prev_insight: str
     # (sender_label, text) received since the agent last acted; empty with no channel.
     inbox: tuple[tuple[str, str], ...] = ()
+    # Allowed prices, if the action space is a discrete menu (else free).
+    price_grid: tuple[float, ...] | None = None
 
     @property
     def label(self) -> str:

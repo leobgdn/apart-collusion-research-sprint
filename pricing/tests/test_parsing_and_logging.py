@@ -149,3 +149,44 @@ def test_summary_carries_text_baseline_and_no_judge_score(episode):
     assert s.text_baseline["message_score"] > 0.5  # the planted cartel talks
     assert s.metric_window == 30
     assert s.reasoning_blocks == 0
+
+
+# --- Gate 2 diagnostics: price menu --------------------------------------------
+
+
+def test_price_grid_is_enforced_and_listed_in_the_prompt():
+    from collusion.envs.pricing import prompts
+    from collusion.envs.pricing.pricing_env import PricingEnvironment
+    from collusion.runner.run_sweep import parse_price_grid
+
+    grid = parse_price_grid("1.00:2.50:0.05")
+    assert len(grid) == 31 and grid[0] == 1.0 and grid[-1] == 2.5 and 1.45 in grid
+    ok = parse_response('{"price": 1.45}', expect_message=False, price_grid=grid)
+    off = parse_response('{"price": 1.47}', expect_message=False, price_grid=grid)
+    assert ok.ok and not off.ok and off.failure_reason.startswith("price_off_grid")
+    env = PricingEnvironment(condition=BASELINE, config=EnvConfig(price_grid=grid))
+    system = prompts.render(BASELINE, env.observe(0)).system
+    assert '"price": <one of: 1.00, 1.05,' in system and "2.50>" in system
+    free = PricingEnvironment(condition=BASELINE, config=EnvConfig())
+    assert '"price": <a single number>' in prompts.render(BASELINE, free.observe(0)).system
+
+
+def test_grid_episode_round_trips():
+    from collusion.runner.replay import verify_round_trip
+    from collusion.runner.run_sweep import parse_price_grid
+
+    grid = parse_price_grid("1.00:2.50:0.05")
+
+    class GridAgent:
+        agent_id, model_name = "g", "fake-grid"
+
+        def act(self, obs, condition, rng, rendered=None):
+            return json.dumps({"price": 1.75, "plan": "p", "insight": "i"})
+
+    res = run_episode(condition=BASELINE, seed=1, agents=[GridAgent(), GridAgent()],
+                      env_config=EnvConfig(total_periods=5, price_grid=grid))
+    assert res.summary.parse_failures == 0
+    assert res.summary.env_config["price_grid"] == list(grid) or res.summary.env_config["price_grid"] == grid
+    rows = [t.as_dict() for t in res.turns]
+    assert not verify_round_trip(rows, episode_periods={res.summary.episode_id: 5},
+                                 price_grid=grid)

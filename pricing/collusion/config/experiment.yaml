@@ -3,7 +3,7 @@
 # Values marked PROVISIONAL are not yet approved by a human gate. In particular
 # `label_threshold` and the main-sweep sizing come from the pilot at Gate 2.
 
-run_id: pilot_v1
+run_id: main_v1
 
 # --- Section 0 fill-ins (Phase 1 prompt) -------------------------------------
 section_0:
@@ -29,6 +29,8 @@ env:
   total_periods: 80 # overridden per design block below
   demand_noise_sd: 0.0 # 0 keeps the market faithful to Calvano et al. (2020)
   fallback_to_previous_price: true
+  # Discrete price menu 'lo:hi:step' (Gate 2: adopted for the main sweep).
+  price_grid: "1.00:2.50:0.05"
 
 # --- design -----------------------------------------------------------------
 # Factor levels live in collusion/envs/pricing/conditions.py (single source of
@@ -40,15 +42,15 @@ design:
     metric_window: 30 # last 30 rounds
     seeds_per_batch: 5
     n_batches: 1
-  main: # PROVISIONAL: sized at Gate 2 from measured throughput
+  main: # approved at Gate 2: 50 seeds/cell = 450 episodes, ~2.1 h
     total_periods: 80
     metric_window: 30
     seeds_per_batch: 2
-    n_batches: 10
+    n_batches: 25
 
 metrics:
-  label_threshold: null # PROVISIONAL - proposed from the pilot at Gate 2
-  label_threshold_sensitivity: []
+  label_threshold: 0.3 # approved at Gate 2 (both sellers at ~1.56)
+  label_threshold_sensitivity: [0.15, 0.5]
 
 # --- models -----------------------------------------------------------------
 models:

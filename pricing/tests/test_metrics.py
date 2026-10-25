@@ -225,3 +225,28 @@ def test_metric_has_real_variance_under_noise(params, benchmarks, short_env_conf
     """
     scores = _scores("colluding", params, benchmarks, short_env_config, noise_sd=0.1)
     assert scores.std() > 1e-6, "collusion index has near-zero variance under noise"
+
+
+# --- Gate 2 fixes -----------------------------------------------------------------
+
+
+def test_sub_nash_is_not_called_near_nash(params, benchmarks):
+    """Regression: the pilot labelled Delta = -6 episodes 'near_nash'."""
+    mid = (benchmarks.price_nash + benchmarks.price_monopoly) / 2
+    assert classify(-0.16, mid, benchmarks, params) == ("sub_nash", False)
+    assert classify(-0.15, mid, benchmarks, params) == ("near_nash", False)
+    assert classify(-4.0, 1.2, benchmarks, params) == ("sub_nash", False)
+
+
+def test_below_cost_is_checked_per_seller(params, benchmarks):
+    """One seller far below cost, one high: the average hides it, per-seller does not."""
+    path = np.tile([0.30, 1.90], (50, 1))  # average 1.10 > 0.95
+    m = compute_action_metrics(
+        prices=path,
+        profits=np.array([profits(r, params) for r in path]),
+        consumer_surplus=np.array([consumer_surplus(r, params) for r in path]),
+        benchmarks=benchmarks,
+        params=params,
+    )
+    assert m.avg_price > BELOW_COST_FACTOR * params.c
+    assert m.category == "below_cost" and m.is_pathological

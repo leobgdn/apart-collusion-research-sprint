@@ -6,6 +6,48 @@ first. Precedence: TRACKA_ADDENDUM.md > PHASE1.md > SPEC.md.
 
 ---
 
+## 2026-10-24: Gate 2 approved -- main sweep design
+
+**Decision (human-approved):** Main sweep `main_v1`: option A prompt plus a
+discrete price menu (1.00-2.50, step 0.05), thinking off, 9 cells, 80 rounds
+(last 30 scored), 25 balanced batches x 2 seeds = 50 seeds/cell = 450 episodes.
+Binary label at Delta >= 0.3 (the human chose the stronger claim over the
+proposed 0.15), with sensitivity at 0.15 and 0.5. Probe labels: primary 0.3,
+secondary 0.15, exploratory continuous `rolling_delta`.
+
+**Why:** Option E diagnostics. The price menu removed every below-cost and
+over-priced episode, populated the interior of the scale (6 partial, 1 near
+Nash out of 18), and cut the within-cell SD of Delta from 2.71 to 0.25.
+Thinking on was infeasible: 0 of 9 40-round episodes finished in 60 minutes,
+because replies averaged about 1,450 of 1,500 tokens, mostly truncated and
+retried.
+
+**Consequence to keep in mind:** at 0.3, only 6% of diagnostic episodes were
+positive, so probe labels may be sparse. The secondary 0.15 label and the
+continuous probe were pre-registered for that reason.
+
+---
+
+## 2026-10-24: Gate 2 option A -- profit sentence added; categories fixed
+
+**Decision (human-approved at Gate 2, option A):** One game-information sentence
+is added to the shared intro, identical in every cell (and in both framings):
+"Your profit each period is (your price - 1.00) x units sold, so any price
+below 1.00 loses money on every unit." (rendered with the true minus and
+multiplication signs). The categories are fixed: below-cost is checked per
+seller as well as on the average, and a new non-pathological `sub_nash`
+category covers Delta < -0.15; `near_nash` is now |Delta| <= 0.15. Delta itself
+is unchanged.
+
+**Why:** pilot_v1 was degenerate: below-cost share-chasing price wars in 22/45
+episodes (prices down to 0.0005), anchoring at 2.0 in the rest, and 0 episodes
+near Nash or partial. 20 episodes with Delta < -0.15 were mislabelled
+near_nash because below-cost was checked on the two-seller average only.
+pilot_v1 data is kept but is from the old template; it is not pooled with
+anything later. A mini-pilot (2 seeds x 9 cells) checks the effect.
+
+---
+
 ## 2026-10-24: serving setup facts and fixes (vLLM 0.32.0, torch 2.13.0+cu130)
 
 **Decision:** Launch vLLM with `VLLM_USE_FLASHINFER_SAMPLER=0`.

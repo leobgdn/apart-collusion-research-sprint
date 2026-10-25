@@ -315,3 +315,14 @@ def test_shipped_pilot_config():
 def test_benchmarks_come_from_the_configured_params():
     cfg = load_config()
     assert cfg.benchmarks.as_dict() == compute_benchmarks(cfg.params).as_dict()
+
+
+def test_shipped_main_config_matches_gate2_approval():
+    cfg = load_config(pilot=False)
+    assert len(cfg.conditions) == 9
+    assert cfg.env_config.total_periods == 80 and cfg.metric_window == 30
+    assert cfg.seeds_per_batch == 2 and cfg.n_batches == 25
+    assert cfg.total_episodes == 450
+    assert cfg.label_threshold == 0.3
+    grid = cfg.env_config.price_grid
+    assert grid[0] == 1.0 and grid[-1] == 2.5 and len(grid) == 31

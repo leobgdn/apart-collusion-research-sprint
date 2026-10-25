@@ -89,6 +89,7 @@ def replay_episode(
     params: PricingParams | None = None,
     total_periods: int | None = None,
     demand_noise_sd: float = 0.0,
+    price_grid: tuple[float, ...] | None = None,
 ) -> list[ReplayedTurn]:
     """Replay one episode's logged turns, re-rendering every prompt.
 
@@ -117,7 +118,11 @@ def replay_episode(
     env = PricingEnvironment(
         condition=condition,
         params=params,
-        config=EnvConfig(total_periods=total_periods, demand_noise_sd=demand_noise_sd),
+        config=EnvConfig(
+            total_periods=total_periods,
+            demand_noise_sd=demand_noise_sd,
+            price_grid=price_grid,
+        ),
         seed=seed,
     )
 
@@ -157,12 +162,15 @@ def verify_round_trip(
     *,
     params: PricingParams | None = None,
     episode_periods: dict[str, int] | None = None,
+    price_grid: tuple[float, ...] | None = None,
 ) -> list[ReplayMismatch]:
     """Replay every episode in a log; return the mismatches (empty == pass)."""
     mismatches: list[ReplayMismatch] = []
     for episode_id, rows in group_turns_by_episode(turns).items():
         total = (episode_periods or {}).get(episode_id)
-        replayed = replay_episode(rows, params=params, total_periods=total)
+        replayed = replay_episode(
+            rows, params=params, total_periods=total, price_grid=price_grid
+        )
         for turn in replayed:
             if turn.matches:
                 continue

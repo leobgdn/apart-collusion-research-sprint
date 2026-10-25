@@ -292,6 +292,17 @@ class LLMAgent:
             local_tokens = self.template.count(rendered_prompt)
 
         result = self.client.chat(rendered.messages, self.sampling, seed=seed)
+        text, reasoning_text = result["text"], None
+        if self.sampling.enable_thinking:
+            # Thinking deliberately on (Gate 2 diagnostic): the reasoning is
+            # logged separately and the action is parsed from what follows it.
+            # A reply cut off mid-thought has no action and fails to parse.
+            head, sep, tail = text.partition("</think>")
+            if sep:
+                reasoning_text = head.replace("<think>", "").strip()
+                text = tail.strip()
+            else:
+                reasoning_text, text = text, ""
         call_info = {
             "request_seed": seed,
             "attempt": self._attempt,
@@ -305,9 +316,10 @@ class LLMAgent:
             "latency_s": round(result["latency_s"], 4),
             "http_attempts": result["http_attempts"],
             "reasoning_content": result["reasoning_content"],
+            "reasoning_text": reasoning_text,
         }
         return AgentReply(
-            text=result["text"],
+            text=text,
             tokens_in=result["prompt_tokens"],
             tokens_out=result["completion_tokens"],
             cost_usd=0.0,

@@ -13,6 +13,7 @@ scratch without duplicating turns.
 
 from __future__ import annotations
 
+import dataclasses
 import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
@@ -137,7 +138,9 @@ def _take_turn(
     attempts = 0
     for attempts in range(max_parse_retries + 1):
         reply = _normalise(agent.act(obs, condition, rng, rendered), agent)
-        action = parse_response(reply.text, expect_message=condition.has_channel)
+        action = parse_response(
+            reply.text, expect_message=condition.has_channel, price_grid=obs.price_grid
+        )
         if action.ok:
             break
     assert reply is not None and action is not None
@@ -329,6 +332,7 @@ def run_episode(
         n_periods=env.period,
         wall_seconds=time.monotonic() - started,
         batch=batch,
+        env_config=dataclasses.asdict(env_config),
         metric_window=window,
         reasoning_blocks=sum(1 for t in turns if t.parsed_action["has_reasoning_block"]),
         truncated_turns=sum(1 for t in turns if t.parsed_action["truncated_fields"]),

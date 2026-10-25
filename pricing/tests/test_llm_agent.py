@@ -177,3 +177,39 @@ def test_retry_uses_a_fresh_seed(tmp_path, params, template):
     assert len(seeds) == 3  # one failed + retry for seller 0, one for seller 1
     assert seeds[0] == request_seed(5, 1, 0, 0) and seeds[1] == request_seed(5, 1, 0, 1)
     assert res.turns[0].retries == 1 and res.summary.parse_failures == 0
+
+
+def test_thinking_on_splits_reasoning_from_the_action(params, template):
+    """Gate 2 diagnostic: with thinking on, reasoning is logged, action parsed."""
+    stub = _Stub(template)
+    stub_reply = '<think>\nMargins look thin; try 1.6.\n</think>\n\n{"price": 1.6, "plan": "p", "insight": "i"}'
+    server, endpoint = _serve(stub)
+    import collusion.agents.llm_agent as la
+
+    real_chat = la.OpenAICompatClient.chat
+
+    def chat(self, messages, sampling, *, seed=None):
+        out = real_chat(self, messages, sampling, seed=seed)
+        out["text"] = stub_reply
+        return out
+
+    try:
+        la.OpenAICompatClient.chat = chat
+        client = OpenAICompatClient(endpoint, model=MODEL)
+        on = SamplingSettings(max_tokens=1500, enable_thinking=True)
+        agents = [LLMAgent(client=client, episode_seed=1, agent_index=i, sampling=on,
+                           template=template) for i in range(2)]
+        from collusion.runner.run_episode import run_episode
+
+        res = run_episode(condition=BASELINE, seed=1, agents=agents,
+                          env_config=EnvConfig(total_periods=2))
+    finally:
+        la.OpenAICompatClient.chat = real_chat
+        server.shutdown()
+    assert stub.requests[0]["chat_template_kwargs"] == {"enable_thinking": True}
+    t = res.turns[0]
+    assert t.parsed_action["ok"] and t.parsed_action["price"] == 1.6
+    assert not t.parsed_action["has_reasoning_block"]
+    assert t.call_info["reasoning_text"] == "Margins look thin; try 1.6."
+    assert not t.rendered_prompt.endswith("<think>\n\n</think>\n\n")
+    assert t.call_info["prompt_token_mismatch"] is False

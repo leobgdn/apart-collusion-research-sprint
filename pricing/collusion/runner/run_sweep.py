@@ -161,7 +161,17 @@ def load_config(path: str | Path = DEFAULT_CONFIG, *, pilot: bool = True) -> Swe
         raw=raw,
         run_id=raw.get("run_id", "sweep"),
         params=PricingParams(**raw["params"]),
-        env_config=EnvConfig(**{**raw["env"], "total_periods": block["total_periods"]}),
+        env_config=EnvConfig(
+            **{
+                **raw["env"],
+                "total_periods": block["total_periods"],
+                "price_grid": (
+                    parse_price_grid(raw["env"]["price_grid"])
+                    if raw["env"].get("price_grid")
+                    else None
+                ),
+            }
+        ),
         conditions=conditions,
         seeds_per_batch=int(block["seeds_per_batch"]),
         n_batches=int(block["n_batches"]),
@@ -468,6 +478,13 @@ def parse_deadline(text: str | None, minutes: float | None) -> float | None:
     return min(candidates) if candidates else None
 
 
+def parse_price_grid(spec: str) -> tuple[float, ...]:
+    """'lo:hi:step' -> (lo, lo+step, ..., hi), rounded to 2 decimals."""
+    lo, hi, step = (float(x) for x in spec.split(":"))
+    n = int(round((hi - lo) / step))
+    return tuple(round(lo + k * step, 2) for k in range(n + 1))
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
@@ -485,6 +502,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-horizon", action="store_true", help="drop F3 (4 cells + placebo)")
     ap.add_argument("--deadline", default=None, help="hard stop, local ISO time")
     ap.add_argument("--minutes", type=float, default=None, help="hard stop in N minutes")
+    ap.add_argument("--thinking", action="store_true",
+                    help="Gate 2 diagnostic: thinking ON (overrides the config)")
+    ap.add_argument("--max-tokens", type=int, default=None)
+    ap.add_argument("--price-grid", default=None,
+                    help="discrete price menu 'lo:hi:step', e.g. 1.00:2.50:0.05")
     args = ap.parse_args(argv)
 
     if args.main and not args.i_have_gate2_approval:
@@ -505,6 +527,13 @@ def main(argv: list[str] | None = None) -> int:
     if args.no_horizon:
         config.conditions = pilot_design(include_horizon=False)
     config.deadline = parse_deadline(args.deadline, args.minutes)
+    agent_cfg = config.raw["models"]["agent"]
+    if args.thinking:
+        agent_cfg["enable_thinking"] = True
+    if args.max_tokens:
+        agent_cfg["max_new_tokens"] = args.max_tokens
+    if args.price_grid:
+        config.env_config.price_grid = parse_price_grid(args.price_grid)
 
     if args.llm:
         factory = llm_agent_factory(config.raw, config.params.n_sellers, args.endpoint)

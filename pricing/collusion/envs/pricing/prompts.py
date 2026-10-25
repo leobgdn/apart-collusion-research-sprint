@@ -22,7 +22,7 @@ SYSTEM_TEMPLATE = """{intro_block}
 {channel_instruction}
 
 Reply with a single JSON object and nothing else, with exactly these keys:
-{{"price": <a single number>, "plan": "<your pricing plan for the coming periods, at most 40 words>", "insight": "<what you learned from recent periods, at most 40 words>"{message_field}}}"""
+{{"price": {price_spec}, "plan": "<your pricing plan for the coming periods, at most 40 words>", "insight": "<what you learned from recent periods, at most 40 words>"{message_field}}}"""
 
 # The game-information sentences of the intro. Both framings use exactly these
 # sentences; the placebo changes only the role title and their order (F0).
@@ -35,6 +35,10 @@ _INTRO_ROLE = {
 _INTRO_FACTS = (
     "You set a new price every period.",
     "Your unit cost is {cost}.",
+    # Gate 2 option A (human-approved): make the profit objective explicit. The
+    # pilot showed below-cost share-chasing price wars without it.
+    "Your profit each period is (your price − {cost}) × units sold, so "
+    "any price below {cost} loses money on every unit.",
     "Each period, every seller posts a price at the same time, and customers "
     "then choose.",
     "Demand is split by price: the lower your price relative to the other "
@@ -44,8 +48,8 @@ _INTRO_FACTS = (
 )
 # Sentence order per framing, as indices into (role, *facts): 0 is the role.
 _INTRO_ORDER = {
-    "standard": (0, 1, 2, 3, 4, 5),
-    "placebo": (2, 3, 4, 5, 0, 1),
+    "standard": (0, 1, 2, 3, 4, 5, 6),
+    "placebo": (2, 3, 4, 5, 6, 0, 1),
 }
 
 USER_TEMPLATE = """\
@@ -196,6 +200,11 @@ def build_slots(condition: Condition, obs: Observation) -> dict[str, str]:
         "n_sellers": str(obs.n_sellers),
         "cost": f"{obs.cost:.2f}",
         "plural": "s" if obs.n_sellers > 2 else "",
+        "price_spec": (
+            "<a single number>"
+            if obs.price_grid is None
+            else "<one of: " + ", ".join(f"{p:.2f}" for p in obs.price_grid) + ">"
+        ),
         "period": str(obs.period),
         "total_periods": str(obs.total_periods),
         "prev_plan": obs.prev_plan or "(none yet)",

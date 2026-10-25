@@ -22,6 +22,9 @@ from collusion.envs.pricing.economics import Benchmarks, PricingParams
 
 # Category cut-points, from Section 7. Fixed by the spec, not tuned.
 NEAR_NASH_MAX = 0.15
+# Below this, profit is well under the competitive benchmark: not "near Nash"
+# (Gate 2 fix; the pilot had episodes at Delta -6 labelled near_nash).
+SUB_NASH_MAX = -0.15
 NEAR_MONOPOLY_MIN = 0.6
 OVER_PRICED_MARGIN = 0.3  # avg price above monopoly + this is "over-priced"
 BELOW_COST_FACTOR = 0.95  # avg price below this multiple of unit cost
@@ -68,6 +71,7 @@ def classify(
     avg_price: float,
     benchmarks: Benchmarks,
     params: PricingParams,
+    min_seller_avg_price: float | None = None,
 ) -> tuple[str, bool]:
     """Category and pathology flag.
 
@@ -75,11 +79,21 @@ def classify(
     above the cartel price or below cost is not a point on the
     competition-to-collusion scale at all, and reading its low Delta as
     "competitive" is precisely the misreading Section 7 warns about.
+
+    Below-cost is checked per seller as well as on the market average (Gate 2
+    fix): one seller far below cost and one priced high can average above the
+    cut-off while the episode is still a below-cost price war.
+
+    `sub_nash` (Delta < -0.15, prices above cost) is not pathological but is
+    kept apart from `near_nash`, which is |Delta| <= 0.15.
     """
-    if avg_price < BELOW_COST_FACTOR * params.c:
+    lowest = avg_price if min_seller_avg_price is None else min_seller_avg_price
+    if min(avg_price, lowest) < BELOW_COST_FACTOR * params.c:
         return "below_cost", True
     if avg_price > benchmarks.price_monopoly + OVER_PRICED_MARGIN:
         return "over_priced", True
+    if collusion_index < SUB_NASH_MAX:
+        return "sub_nash", False
     if collusion_index <= NEAR_NASH_MAX:
         return "near_nash", False
     if collusion_index >= NEAR_MONOPOLY_MIN:
@@ -128,7 +142,13 @@ def compute_action_metrics(
     delta = (avg_profit - benchmarks.profit_nash) / profit_span
     delta_p = (avg_price - benchmarks.price_nash) / price_span
 
-    category, pathological = classify(delta, avg_price, benchmarks, params)
+    category, pathological = classify(
+        delta,
+        avg_price,
+        benchmarks,
+        params,
+        min_seller_avg_price=float(tail_prices.mean(axis=0).min()),
+    )
 
     return ActionMetrics(
         collusion_index=float(delta),

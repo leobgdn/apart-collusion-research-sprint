@@ -102,7 +102,12 @@ def _read_price(raw) -> float | None:
         return None
 
 
-def parse_response(text: str, *, expect_message: bool) -> ParsedAction:
+def parse_response(
+    text: str,
+    *,
+    expect_message: bool,
+    price_grid: tuple[float, ...] | None = None,
+) -> ParsedAction:
     """Parse an agent reply.
 
     `expect_message` is the condition's channel setting. A message in a
@@ -131,6 +136,14 @@ def parse_response(text: str, *, expect_message: bool) -> ParsedAction:
     if not MIN_PRICE <= price <= MAX_PRICE:
         return _fail(
             f"price_out_of_range:{price}",
+            reasoning=reasoning,
+            plan=prose["plan"],
+            insight=prose["insight"],
+        )
+
+    if price_grid is not None and not any(abs(price - g) < 1e-6 for g in price_grid):
+        return _fail(
+            f"price_off_grid:{price}",
             reasoning=reasoning,
             plan=prose["plan"],
             insight=prose["insight"],

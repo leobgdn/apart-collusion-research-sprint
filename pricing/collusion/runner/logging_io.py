@@ -146,6 +146,7 @@ class EpisodeSummary:
     wall_seconds: float = 0.0
     # Phase 1 additions.
     batch: int | None = None
+    env_config: dict[str, Any] = field(default_factory=dict)
     metric_window: int = 0
     reasoning_blocks: int = 0
     truncated_turns: int = 0

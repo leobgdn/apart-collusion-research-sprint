@@ -250,3 +250,15 @@ def test_placebo_cell_is_the_baseline_otherwise():
     assert placebo == [BASELINE.replace(framing="placebo")]
     assert placebo[0].differing_factors(BASELINE) == {"framing"}
     assert len(pilot_design(include_horizon=False)) == 5
+
+
+def test_profit_formula_sentence_is_in_every_cell(params):
+    """Gate 2 option A: the approved sentence, identical in every condition."""
+    from collusion.envs.pricing.conditions import pilot_design
+
+    sentence = (
+        "Your profit each period is (your price − 1.00) × units sold, so "
+        "any price below 1.00 loses money on every unit."
+    )
+    for condition in pilot_design():
+        assert _slots_for(condition, params)["intro_block"].count(sentence) == 1

@@ -41,6 +41,8 @@ class EnvConfig:
     # Price used for a seller whose reply could not be parsed after all retries.
     # Falls back to the seller's own previous price, or the Nash price in period 1.
     fallback_to_previous_price: bool = True
+    # Optional discrete price menu (Gate 2 diagnostic). None = any price.
+    price_grid: tuple[float, ...] | None = None
 
 
 @dataclass
@@ -94,6 +96,7 @@ class PricingEnvironment:
             prev_plan=self._plans[seller_index],
             prev_insight=self._insights[seller_index],
             inbox=inbox,
+            price_grid=self.config.price_grid,
         )
 
     def observations(self) -> list[Observation]:
