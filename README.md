@@ -6,7 +6,7 @@ own environment, README, tests and reports.
 
 | folder | what | status |
 |---|---|---|
-| [`pricing/`](pricing/) | **Track A**: a repeated logit-Bertrand pricing game with two Qwen3-8B sellers served locally (vLLM in WSL2, RTX 3090). Factorial sweep over channel x history window x horizon, plus a placebo. Action-level collusion index, LLM judge, activation probes. | main sweep complete (450 episodes); analysis in progress |
+| [`pricing/`](pricing/) | **Track A**: a repeated logit-Bertrand pricing game with two Qwen3-8B sellers served locally (vLLM in WSL2, RTX 3090). Factorial sweep over channel x history window x horizon, plus a placebo. Action-level collusion index, LLM judge, activation probes. | complete: 450 episodes, effects, judge, probes; write-up in `pricing/reports/writeup.md` |
 | [`colosseum/`](colosseum/) | **Track B**: feasibility check of the Colosseum multi-agent environment against the same local model server. | see `colosseum/reports/` |
 | [`archive/`](archive/) | Superseded first version of the project (Plan B Stage 1 and the Fireworks-hosted Plan A adapter), kept for history. Not used by either track. | frozen |
 
