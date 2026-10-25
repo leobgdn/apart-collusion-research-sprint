@@ -10,7 +10,7 @@ so the exact messages + tools sent to the model at every turn are captured.
 Upstream mode also:
   * injects chat_template_kwargs={"enable_thinking": false} (Qwen3 thinking off),
   * caps in-flight upstream requests at --max-concurrency (default 4),
-  * blocks while ~/collusion_shared/GPU_BUSY exists.
+  * blocks while GPU_BUSY exists in any shared dir (Windows ~ and the WSL home).
 """
 
 from __future__ import annotations
@@ -25,7 +25,12 @@ import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-GPU_BUSY = Path.home() / "collusion_shared" / "GPU_BUSY"
+# The server lives in WSL, so the other session may write its flags on either side.
+SHARED_DIRS = [Path.home() / "collusion_shared", Path("//wsl.localhost/Ubuntu-24.04/home/leo/collusion_shared")]
+
+
+def _gpu_busy() -> bool:
+    return any((d / "GPU_BUSY").exists() for d in SHARED_DIRS)
 
 ARGS: argparse.Namespace
 SEM: threading.Semaphore
@@ -119,7 +124,7 @@ class Handler(BaseHTTPRequestHandler):
         if ARGS.mock:
             status, body = 200, _mock_response(payload)
         else:
-            while GPU_BUSY.exists():
+            while _gpu_busy():
                 time.sleep(5)
                 waited += 5
             with SEM:

@@ -34,7 +34,7 @@ llm_models:
 experiment:
   tag: trackB_pilot
   output_dir: ../outputs/pilot
-  max_concurrent_runs: 2
+  max_concurrent_runs: 4
   seeds: [1, 2]
   collusion:
     colluder_selection: random
