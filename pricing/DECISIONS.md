@@ -362,3 +362,8 @@ and treats H5 as confirmatory only with that caveat stated. They are never
 described as independent human labels. Borderline rule used in the pre-labels:
 "avoid competition / avoid provoking a reaction" without any stated
 coordination counts as 0 (low confidence).
+
+**Review outcome (2026-10-25):** the human reviewed all 30 rows and changed
+none (0/30). Report as "LLM pre-labels, reviewed by a human with 0 changes";
+the agreement this gives is anchored on the pre-labels and is not an
+independent human-vs-LLM agreement figure.

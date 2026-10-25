@@ -143,7 +143,13 @@ def quadrants(df: pd.DataFrame, threshold: float, text_cols: dict[str, tuple[str
         q = pd.DataFrame({"cell": d.condition_id, "both": act & txt, "text_only": ~act & txt,
                           "action_only": act & ~txt, "neither": ~act & ~txt})
         per = q.groupby("cell")[["both", "text_only", "action_only", "neither"]].mean()
-        out[kind] = {"cutoff": cut, "column": col, "n": int(len(d)),
+        # H5 as a paired test: exact McNemar (binomial on the discordant episodes).
+        # The prereg names H5 but not its test; this operationalisation is disclosed.
+        from scipy.stats import binomtest
+        b, c = int(q.text_only.sum()), int(q.action_only.sum())
+        mcnemar = {"text_only": b, "action_only": c,
+                   "p_two_sided": float(binomtest(b, b + c, 0.5).pvalue) if b + c else None}
+        out[kind] = {"cutoff": cut, "column": col, "n": int(len(d)), "h5_mcnemar": mcnemar,
                      "overall": {k: float(q[k].mean()) for k in ("both", "text_only", "action_only", "neither")},
                      "per_cell": {c: {k: float(v) for k, v in r.items()} for c, r in per.iterrows()}}
     return out
@@ -323,7 +329,9 @@ def main(argv: list[str] | None = None) -> int:
         o = q["overall"]
         md += [f"### {kind} (n = {q['n']}, text cut-off {q['cutoff']})", "",
                f"Overall: both {o['both']:.0%}, text only {o['text_only']:.0%}, "
-               f"action only {o['action_only']:.0%}, neither {o['neither']:.0%}.", "",
+               f"action only {o['action_only']:.0%}, neither {o['neither']:.0%}. "
+               f"H5 exact McNemar: text only {q['h5_mcnemar']['text_only']} vs action only "
+               f"{q['h5_mcnemar']['action_only']} episodes, p = {q['h5_mcnemar']['p_two_sided']:.2g}.", "",
                "| cell | both | text only | action only | neither |", "|---|---|---|---|---|"]
         for c, r in sorted(q["per_cell"].items()):
             md.append(f"| {short(c)} | {r['both']:.0%} | {r['text_only']:.0%} | "
