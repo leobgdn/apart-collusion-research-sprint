@@ -1,11 +1,25 @@
 {
   "run_id": "main_v1",
   "items": {
-    "V01": "channel=none.framing=placebo.history_window=long.horizon=long_run#seed=1",
-    "V02": "channel=private.framing=standard.history_window=short.horizon=myopic#seed=7",
-    "V03": "channel=none.framing=standard.history_window=long.horizon=long_run#seed=1",
-    "V04": "channel=none.framing=standard.history_window=short.horizon=myopic#seed=9",
-    "V05": "channel=private.framing=standard.history_window=long.horizon=long_run#seed=1",
-    "V06": "channel=private.framing=standard.history_window=long.horizon=myopic#seed=8"
+    "V01": "channel=private.framing=standard.history_window=long.horizon=myopic#seed=4",
+    "V02": "channel=none.framing=standard.history_window=long.horizon=long_run#seed=1",
+    "V03": "channel=private.framing=standard.history_window=short.horizon=long_run#seed=40",
+    "V04": "channel=private.framing=standard.history_window=long.horizon=long_run#seed=40",
+    "V05": "channel=none.framing=standard.history_window=short.horizon=long_run#seed=35",
+    "V06": "channel=none.framing=standard.history_window=short.horizon=long_run#seed=4",
+    "V07": "channel=private.framing=standard.history_window=long.horizon=myopic#seed=18",
+    "V08": "channel=none.framing=standard.history_window=short.horizon=myopic#seed=33",
+    "V09": "channel=none.framing=placebo.history_window=long.horizon=long_run#seed=1",
+    "V10": "channel=private.framing=standard.history_window=short.horizon=myopic#seed=44",
+    "V11": "channel=private.framing=standard.history_window=short.horizon=long_run#seed=15",
+    "V12": "channel=none.framing=standard.history_window=long.horizon=long_run#seed=13",
+    "V13": "channel=private.framing=standard.history_window=short.horizon=myopic#seed=19",
+    "V14": "channel=private.framing=standard.history_window=short.horizon=long_run#seed=18",
+    "V15": "channel=none.framing=placebo.history_window=long.horizon=long_run#seed=49",
+    "V16": "channel=none.framing=standard.history_window=long.horizon=long_run#seed=6",
+    "V17": "channel=none.framing=standard.history_window=short.horizon=myopic#seed=9",
+    "V18": "channel=private.framing=standard.history_window=short.horizon=myopic#seed=7",
+    "V19": "channel=private.framing=standard.history_window=long.horizon=long_run#seed=19",
+    "V20": "channel=none.framing=standard.history_window=short.horizon=long_run#seed=10"
   }
 }

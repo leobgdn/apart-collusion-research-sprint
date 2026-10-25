@@ -342,3 +342,23 @@ act only through OpenAI `tools`; without these flags vLLM rejects those
 requests. Requests without `tools` -- every pricing-game call -- are not parsed
 for tool calls, so Track A's behaviour and logs are unchanged. Added with the
 human's approval.
+
+---
+
+## 2026-10-25: judge-validation labels are LLM pre-labels reviewed by the human
+
+**Decision:** Claude (claude-opus-5-5) pre-filled all 30 rows of
+`data/judge_validation.csv` from the digest alone, without opening the key or
+any judge scores. The human then reviews every row and changes any they
+disagree with. Claude's untouched labels are kept in
+`data/judge_validation_claude_prelabels.csv`.
+
+**Why:** Time pressure on the human. The prereg asks for human labels; labels
+anchored on an LLM's suggestions are weaker than blind human labels.
+
+**How to apply:** The write-up describes the labels as "LLM pre-labels,
+reviewed and corrected by a human", reports how many rows the human changed,
+and treats H5 as confirmatory only with that caveat stated. They are never
+described as independent human labels. Borderline rule used in the pre-labels:
+"avoid competition / avoid provoking a reaction" without any stated
+coordination counts as 0 (low confidence).
