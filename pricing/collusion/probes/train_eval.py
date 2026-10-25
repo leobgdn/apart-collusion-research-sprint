@@ -76,7 +76,7 @@ def load(run_id: str, subset: str):
             continue
         turn_extra[k] = {"rolling_delta": t["rolling_delta"]}
         a = t["parsed_action"]
-        texts[t["episode_id"]].append(f"{a.get('plan', '')} {a.get('insight', '')} {a.get('message', '')}")
+        texts[t["episode_id"]].append(" ".join(a.get(k) or "" for k in ("plan", "insight", "message")))
         prices[t["episode_id"]].append(t["price_window"])
 
     judge = defaultdict(dict)
@@ -119,6 +119,23 @@ def auroc_ci(y, s, rng):
         if len(np.unique(y[idx])) == 2:
             boots.append(roc_auc_score(y[idx], s[idx]))
     return {"auroc": point, "ci95": [float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))]}
+
+
+def auroc_diff(y_by_ep: dict, a: dict, b: dict, rng):
+    """Paired bootstrap over episodes of AUROC(a) - AUROC(b) on their common episodes."""
+    from sklearn.metrics import roc_auc_score
+
+    e = sorted(set(a) & set(b))
+    y = np.array([y_by_ep[k] for k in e])
+    sa, sb = np.array([a[k] for k in e]), np.array([b[k] for k in e])
+    point = float(roc_auc_score(y, sa) - roc_auc_score(y, sb))
+    boots = []
+    for _ in range(N_BOOT):
+        idx = rng.integers(0, len(y), len(y))
+        if len(np.unique(y[idx])) == 2:
+            boots.append(roc_auc_score(y[idx], sa[idx]) - roc_auc_score(y[idx], sb[idx]))
+    lo, hi = np.percentile(boots, [2.5, 97.5])
+    return {"diff": point, "ci95": [float(lo), float(hi)], "n_episodes": len(e)}
 
 
 def tpr_at_fpr(y_test, s_test, s_train_neg, fpr=0.05):
@@ -281,6 +298,15 @@ def main(argv: list[str] | None = None) -> int:
             jpi = {e: judge[e]["plan_insight"] for e in eps_all if judge.get(e, {}).get("plan_insight") is not None}
             R["baselines"]["judge_plan_insight"] = summarise(jpi, ep_label, rng)
 
+        # Does the probe add beyond the baselines? Paired bootstrap of the AUROC
+        # difference, best-layer LR (mean over turns) vs each baseline, same episodes.
+        best_scores = probe[best_L][0]["lr_mean"]
+        others = dict(base)
+        if judge:
+            others["judge_max"] = jscore
+        R["probe_minus_baseline"] = {k: auroc_diff(ep_label, best_scores, v, rng)
+                                     for k, v in others.items() if v}
+
         # Leave-one-condition-out transfer at the best layer
         transfer = {}
         for c in sorted(set(cond.values())):
@@ -344,6 +370,9 @@ def main(argv: list[str] | None = None) -> int:
                f"{R['shuffled_control']['auroc']}", "", "Baselines:", ""]
         for k, v in R["baselines"].items():
             md.append(f"- {k}: AUROC {v['auroc'] if v['auroc'] is None else round(v['auroc'], 3)} {v.get('ci95')}")
+        md += ["", f"Probe (layer {R['best_layer_by_cv']}, LR mean) minus baseline, AUROC, paired bootstrap:", ""]
+        for k, v in R["probe_minus_baseline"].items():
+            md.append(f"- vs {k}: {v['diff']:+.3f} [{v['ci95'][0]:+.3f}, {v['ci95'][1]:+.3f}]")
         md += ["", "Leave-one-condition-out transfer (LR mean, best layer):", ""]
         for c, v in R["transfer_leave_one_condition_out"].items():
             md.append(f"- {c}: {'single-class cell, AUROC undefined' if v['auroc'] is None else round(v['auroc'], 3)} "

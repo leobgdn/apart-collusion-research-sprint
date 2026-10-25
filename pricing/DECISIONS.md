@@ -367,3 +367,24 @@ coordination counts as 0 (low confidence).
 none (0/30). Report as "LLM pre-labels, reviewed by a human with 0 changes";
 the agreement this gives is anchored on the pre-labels and is not an
 independent human-vs-LLM agreement figure.
+
+---
+
+## 2026-10-25: Gate 4 decisions and Stage 5 analysis choices
+
+**Decision (human, Gate 4):** run Stage 5 exactly as pre-registered; H5 stays
+confirmatory. The human reviewed every pre-label and judged them correct.
+
+**Analysis choices not fixed by the prereg (disclosed in the write-up):**
+- H5 test: exact McNemar on episodes where the text flag and the action flag
+  disagree (text only vs action only), per measure.
+- Probes use the scored-window turns (periods 51-80), the turns the
+  episode label is computed over. The rest subset is extracted but unused.
+- Probe cost controls: PCA to 256 components fitted on training folds only;
+  probes trained on every 5th period, scored on every turn.
+- "The probe must add beyond the price-history baseline" is tested as a
+  paired bootstrap over episodes of the AUROC difference (best-by-CV layer,
+  LR, mean over turns, vs each baseline). The best layer is chosen on the same
+  folds, which favours the probe; the full layer sweep is reported.
+- Keyword quadrant cut-off (hit share > 0.5) was chosen after the data; the
+  keyword version is exploratory.

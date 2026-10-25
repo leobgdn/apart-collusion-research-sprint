@@ -69,13 +69,19 @@ def gate2_data(argv=None) -> int:
 
 
 def results(argv=None) -> int:
-    """Stage 4 analysis. Gated: there is no main-sweep data yet."""
-    print(
-        "`results` is Stage 4 (Section 6). It needs an approved main sweep, which "
-        "requires Gate 2 and Gate 3 sign-off first. Nothing to do.",
-        file=sys.stderr,
-    )
-    return 1
+    """Stages 4-5 from the saved logs: effects, judge validation, Stage 4 tables
+    and figures, probes (needs data/activations from probes/extract.py)."""
+    run = ["--run-id", "main_v1", *(argv or [])]
+    steps = [
+        (PY, "-m", "collusion.analysis.effects", *run),
+        (PY, "-m", "collusion.analysis.judge_validation", "score", *run),
+        (PY, "-m", "collusion.analysis.stage4", *run),
+        (PY, "-m", "collusion.probes.train_eval", *run),
+    ]
+    for step in steps:
+        if rc := _run(*step):
+            return rc
+    return 0
 
 
 def clean(argv=None) -> int:
