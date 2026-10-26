@@ -1,4 +1,4 @@
-"""Activation probes vs baselines (prereg "Planned analyses" 7; SPEC Section 10).
+"""Activation probes vs baselines (prereg "Planned analyses" 7).
 
     python -m collusion.probes.train_eval --run-id main_v1 [--subset window]
 
@@ -14,8 +14,8 @@ Probes, per layer:
   * difference-of-means direction (training episodes), projection score.
   Inputs are standardised and reduced with PCA (256 components) fitted on the
   training fold only, and probes train on a subsample of turns (every
-  `--train-stride`-th period). Both choices keep the CPU cost to minutes and are
-  recorded in DECISIONS.md. Scoring uses every turn in the subset.
+  `--train-stride`-th period). Both choices keep the CPU cost to minutes.
+  Scoring uses every turn in the subset.
   Turn scores are aggregated to an episode score (mean and max).
 
 Splits (always by episode, never by turn):

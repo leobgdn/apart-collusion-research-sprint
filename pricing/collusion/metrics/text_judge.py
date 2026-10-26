@@ -118,7 +118,7 @@ class TextJudge(Protocol):
     """Interface for the later LLM judge (JUDGE_MODEL, temperature 0).
 
     Must return a 0-1 score per sub-measure plus the raw judge output, and must
-    never be shown the action-level score (SPEC Section 8).
+    never be shown the action-level score.
     """
 
     name: str

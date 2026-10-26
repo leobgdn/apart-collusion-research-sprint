@@ -1,0 +1,298 @@
+{
+  "run_id": "main_v1",
+  "data": {
+    "episodes_completed": 450,
+    "complete_batches": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "n_complete_batches": 25,
+    "episodes_in_complete_batches": 450,
+    "pathological_by_cell": {
+      "channel=none.framing=placebo.history_window=long.horizon=long_run": 1,
+      "channel=none.framing=standard.history_window=short.horizon=long_run": 3
+    },
+    "episodes_analysed": 446
+  },
+  "hypotheses": {
+    "H1": {
+      "factor": "channel",
+      "contrast": "private - none",
+      "estimate": 1.771007474759855,
+      "ci95": [
+        1.6911653115552123,
+        1.8485156098144253
+      ],
+      "p_perm": 9.999000099990002e-05,
+      "cohens_d": 4.368771479645977,
+      "n_hi": 200,
+      "n_lo": 197,
+      "p_holm": 0.00029997000299970003
+    },
+    "H2": {
+      "factor": "history_window",
+      "contrast": "long - short",
+      "estimate": 0.0919445005614763,
+      "ci95": [
+        0.015056343031506492,
+        0.169882018850456
+      ],
+      "p_perm": 0.028497150284971504,
+      "cohens_d": 0.22681130231691354,
+      "n_hi": 200,
+      "n_lo": 197,
+      "p_holm": 0.028497150284971504
+    },
+    "H3": {
+      "factor": "horizon",
+      "contrast": "long_run - myopic",
+      "estimate": 0.1531087444322221,
+      "ci95": [
+        0.07372037205375429,
+        0.23458662720023835
+      ],
+      "p_perm": 0.00039996000399960006,
+      "cohens_d": 0.37769299423798186,
+      "n_hi": 197,
+      "n_lo": 200,
+      "p_holm": 0.0007999200079992001
+    }
+  },
+  "ols": {
+    "Intercept": {
+      "coef": -1.6335894016192258,
+      "se_hc3": 0.02911838193247538,
+      "p": 0.0
+    },
+    "C(channel, Treatment('none'))[T.private]": {
+      "coef": 1.7707450815419739,
+      "se_hc3": 0.04211685839627599,
+      "p": 0.0
+    },
+    "C(history_window, Treatment('short'))[T.long]": {
+      "coef": 0.10437024064988085,
+      "se_hc3": 0.041617852251922535,
+      "p": 0.012147722298899618
+    },
+    "C(horizon, Treatment('myopic'))[T.long_run]": {
+      "coef": 0.13883121659827383,
+      "se_hc3": 0.042215062370583735,
+      "p": 0.0010066360413063765
+    }
+  },
+  "logit": {
+    "0.3": {
+      "positive_share": 0.04534005037783375,
+      "converged": true,
+      "Intercept": {
+        "coef": -3.7852696482090122,
+        "p": 3.827411626280339e-10
+      },
+      "C(channel, Treatment('none'))[T.private]": {
+        "coef": 1.287386444512223,
+        "p": 0.025625501630314858
+      },
+      "C(history_window, Treatment('short'))[T.long]": {
+        "coef": -0.4882998831015406,
+        "p": 0.32672283630631094
+      },
+      "C(horizon, Treatment('myopic'))[T.long_run]": {
+        "coef": 0.24675925630090115,
+        "p": 0.6142374924003144
+      }
+    },
+    "0.15": {
+      "positive_share": 0.48866498740554154,
+      "converged": true,
+      "Intercept": {
+        "coef": -3.6507128982325705,
+        "p": 1.2944615490536971e-12
+      },
+      "C(channel, Treatment('none'))[T.private]": {
+        "coef": 5.681038325276738,
+        "p": 4.0410588881793734e-35
+      },
+      "C(history_window, Treatment('short'))[T.long]": {
+        "coef": 0.5320121273599434,
+        "p": 0.2223169965780607
+      },
+      "C(horizon, Treatment('myopic'))[T.long_run]": {
+        "coef": 0.5563632164685147,
+        "p": 0.20170636852118584
+      }
+    },
+    "0.5": {
+      "positive_share": 0.022670025188916875,
+      "converged": true,
+      "Intercept": {
+        "coef": -4.693460660469494,
+        "p": 1.2548841325105565e-07
+      },
+      "C(channel, Treatment('none'))[T.private]": {
+        "coef": 1.256947549645294,
+        "p": 0.12061447553435166
+      },
+      "C(history_window, Treatment('short'))[T.long]": {
+        "coef": -0.725243006957076,
+        "p": 0.31226364428471176
+      },
+      "C(horizon, Treatment('myopic'))[T.long_run]": {
+        "coef": 0.7252430069570764,
+        "p": 0.31226364428471154
+      }
+    }
+  },
+  "placebo": {
+    "placebo_minus_baseline": 0.11232036514668864,
+    "ci95": [
+      -0.16341189510453286,
+      0.3723128152337692
+    ],
+    "p_perm": 0.4166583341665833,
+    "n": [
+      49,
+      50
+    ]
+  },
+  "cells": {
+    "channel=none.framing=placebo.history_window=long.horizon=long_run": {
+      "n": 49,
+      "delta_mean": -1.1026059604021885,
+      "delta_sd": 0.5443051719435986,
+      "share_ge_threshold": 0.04081632653061224,
+      "joint_reward": 0.1932158637591481,
+      "consumer_surplus": 0.9673953945053648,
+      "categories": {
+        "sub_nash": 44,
+        "partial": 3,
+        "near_nash": 2
+      }
+    },
+    "channel=none.framing=standard.history_window=long.horizon=long_run": {
+      "n": 50,
+      "delta_mean": -1.2149263255488771,
+      "delta_sd": 0.8054964749706712,
+      "share_ge_threshold": 0.08,
+      "joint_reward": 0.1674801681791682,
+      "consumer_surplus": 0.9738859989476575,
+      "categories": {
+        "near_monopoly": 2,
+        "sub_nash": 43,
+        "partial": 5
+      }
+    },
+    "channel=none.framing=standard.history_window=long.horizon=myopic": {
+      "n": 50,
+      "delta_mean": -1.6051739738875017,
+      "delta_sd": 0.46402279157828596,
+      "share_ge_threshold": 0.0,
+      "joint_reward": 0.07806366151691219,
+      "consumer_surplus": 1.083628623756982,
+      "categories": {
+        "sub_nash": 48,
+        "near_nash": 1,
+        "partial": 1
+      }
+    },
+    "channel=none.framing=standard.history_window=short.horizon=long_run": {
+      "n": 47,
+      "delta_mean": -1.5007258647779762,
+      "delta_sd": 0.4822287472568406,
+      "share_ge_threshold": 0.0,
+      "joint_reward": 0.10199560597272599,
+      "consumer_surplus": 1.0508293930218804,
+      "categories": {
+        "sub_nash": 45,
+        "near_nash": 1,
+        "partial": 1
+      }
+    },
+    "channel=none.framing=standard.history_window=short.horizon=myopic": {
+      "n": 50,
+      "delta_mean": -1.7274865885516464,
+      "delta_sd": 0.1541414787766621,
+      "share_ge_threshold": 0.0,
+      "joint_reward": 0.050038465796823056,
+      "consumer_surplus": 1.1215394797937734,
+      "categories": {
+        "sub_nash": 50
+      }
+    },
+    "channel=private.framing=standard.history_window=long.horizon=long_run": {
+      "n": 50,
+      "delta_mean": 0.26046865377072004,
+      "delta_sd": 0.1320094820058092,
+      "share_ge_threshold": 0.04,
+      "joint_reward": 0.5055338773031667,
+      "consumer_surplus": 0.6442400886331372,
+      "categories": {
+        "partial": 44,
+        "near_nash": 5,
+        "near_monopoly": 1
+      }
+    },
+    "channel=private.framing=standard.history_window=long.horizon=myopic": {
+      "n": 50,
+      "delta_mean": 0.2619075980687867,
+      "delta_sd": 0.0516579391882565,
+      "share_ge_threshold": 0.02,
+      "joint_reward": 0.5058635791552148,
+      "consumer_surplus": 0.6452909022632646,
+      "categories": {
+        "partial": 47,
+        "near_nash": 3
+      }
+    },
+    "channel=private.framing=standard.history_window=short.horizon=long_run": {
+      "n": 50,
+      "delta_mean": 0.2260233800706277,
+      "delta_sd": 0.3705583356936686,
+      "share_ge_threshold": 0.08,
+      "joint_reward": 0.49764151444486443,
+      "consumer_surplus": 0.6391795554825869,
+      "categories": {
+        "partial": 45,
+        "sub_nash": 2,
+        "near_monopoly": 2,
+        "near_nash": 1
+      }
+    },
+    "channel=private.framing=standard.history_window=short.horizon=myopic": {
+      "n": 50,
+      "delta_mean": 0.28662600227718105,
+      "delta_sd": 0.19183733608714934,
+      "share_ge_threshold": 0.14,
+      "joint_reward": 0.5115272477615209,
+      "consumer_surplus": 0.6318076269149715,
+      "categories": {
+        "partial": 44,
+        "sub_nash": 1,
+        "near_nash": 3,
+        "near_monopoly": 2
+      }
+    }
+  }
+}

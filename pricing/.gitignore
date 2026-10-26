@@ -6,8 +6,8 @@ data/episodes/*
 data/activations/*
 !data/logs/.gitkeep
 !data/episodes/.gitkeep
-results/*
-!results/.gitkeep
+results/judge_validation_digest.md
+reports/
 .env
 *.npy
 *.pt

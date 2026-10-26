@@ -1,0 +1,942 @@
+{
+  "run_id": "main_v1",
+  "subset": "window",
+  "layers": [
+    11,
+    14,
+    18,
+    22,
+    25,
+    29
+  ],
+  "n_turns": 26760,
+  "n_episodes": 446,
+  "train_stride": 5,
+  "pca_dim": 256,
+  "by_threshold": {
+    "0.3": {
+      "positive_share": 0.04484304932735426,
+      "n_positive": 20,
+      "probes": {
+        "11": {
+          "lr_mean": {
+            "auroc": 0.8776995305164319,
+            "ci95": [
+              0.8001424194899257,
+              0.9405532671592004
+            ],
+            "tpr_at_5fpr": 0.55,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "lr_max": {
+            "auroc": 0.8768779342723004,
+            "ci95": [
+              0.8017270287148819,
+              0.938028771202034
+            ],
+            "tpr_at_5fpr": 0.85,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_mean": {
+            "auroc": 0.6192488262910798,
+            "ci95": [
+              0.4608888035471546,
+              0.7655805868659641
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_max": {
+            "auroc": 0.6318075117370892,
+            "ci95": [
+              0.47615622565720983,
+              0.7721048555058604
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          }
+        },
+        "14": {
+          "lr_mean": {
+            "auroc": 0.8357981220657277,
+            "ci95": [
+              0.7402727599878334,
+              0.9188666993383975
+            ],
+            "tpr_at_5fpr": 0.5,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "lr_max": {
+            "auroc": 0.8190140845070423,
+            "ci95": [
+              0.7558635461021946,
+              0.8776467035320952
+            ],
+            "tpr_at_5fpr": 0.9,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_mean": {
+            "auroc": 0.6295774647887324,
+            "ci95": [
+              0.47834409801834266,
+              0.7684372567699316
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_max": {
+            "auroc": 0.6278169014084506,
+            "ci95": [
+              0.47380677912159497,
+              0.7670678840691019
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          }
+        },
+        "18": {
+          "lr_mean": {
+            "auroc": 0.9171361502347418,
+            "ci95": [
+              0.8313798026998962,
+              0.9870649340162421
+            ],
+            "tpr_at_5fpr": 0.85,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "lr_max": {
+            "auroc": 0.8835680751173709,
+            "ci95": [
+              0.8028988563161917,
+              0.9448292782613448
+            ],
+            "tpr_at_5fpr": 0.95,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_mean": {
+            "auroc": 0.6296948356807512,
+            "ci95": [
+              0.46670568605648405,
+              0.7745958816294861
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_max": {
+            "auroc": 0.6312206572769953,
+            "ci95": [
+              0.4687931460498892,
+              0.7728976697061803
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          }
+        },
+        "22": {
+          "lr_mean": {
+            "auroc": 0.8528169014084507,
+            "ci95": [
+              0.7441460383726067,
+              0.9435014827711047
+            ],
+            "tpr_at_5fpr": 0.7,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "lr_max": {
+            "auroc": 0.8507042253521127,
+            "ci95": [
+              0.7514523624303964,
+              0.9352558847171354
+            ],
+            "tpr_at_5fpr": 0.75,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_mean": {
+            "auroc": 0.6678403755868545,
+            "ci95": [
+              0.5381272245843806,
+              0.7951401164272279
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_max": {
+            "auroc": 0.6768779342723004,
+            "ci95": [
+              0.5422739986099944,
+              0.789983258203601
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          }
+        },
+        "25": {
+          "lr_mean": {
+            "auroc": 0.9146713615023474,
+            "ci95": [
+              0.8531511784920599,
+              0.9646238595092567
+            ],
+            "tpr_at_5fpr": 0.65,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "lr_max": {
+            "auroc": 0.9085680751173709,
+            "ci95": [
+              0.84377512043759,
+              0.9617828117077861
+            ],
+            "tpr_at_5fpr": 0.85,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_mean": {
+            "auroc": 0.6807511737089202,
+            "ci95": [
+              0.553476645279739,
+              0.7954736708559054
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_max": {
+            "auroc": 0.6872065727699531,
+            "ci95": [
+              0.5640588662790698,
+              0.7973971339104072
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          }
+        },
+        "29": {
+          "lr_mean": {
+            "auroc": 0.9085680751173708,
+            "ci95": [
+              0.8372928802237031,
+              0.9669024080379713
+            ],
+            "tpr_at_5fpr": 0.65,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "lr_max": {
+            "auroc": 0.9066901408450704,
+            "ci95": [
+              0.840106104850462,
+              0.9603857618561684
+            ],
+            "tpr_at_5fpr": 0.85,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_mean": {
+            "auroc": 0.6818075117370892,
+            "ci95": [
+              0.5572854269479124,
+              0.792583139984532
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          },
+          "dom_max": {
+            "auroc": 0.6845070422535211,
+            "ci95": [
+              0.5740436189273627,
+              0.7912977058319038
+            ],
+            "tpr_at_5fpr": 0.0,
+            "n_episodes": 446,
+            "n_positive": 20
+          }
+        }
+      },
+      "best_layer_by_cv": 18,
+      "shuffled_control": {
+        "auroc": 0.5529342723004695,
+        "ci95": [
+          0.4244911674347159,
+          0.6801170275802627
+        ],
+        "n_episodes": 446,
+        "n_positive": 20
+      },
+      "baselines": {
+        "tfidf": {
+          "auroc": 0.8570422535211268,
+          "ci95": [
+            0.7622938918618853,
+            0.9383143581719094
+          ],
+          "n_episodes": 446,
+          "n_positive": 20
+        },
+        "price_history": {
+          "auroc": 0.9956572769953052,
+          "ci95": [
+            0.9897077004966294,
+            0.999692862316439
+          ],
+          "n_episodes": 446,
+          "n_positive": 20
+        },
+        "judge_max": {
+          "auroc": 0.5636150234741784,
+          "ci95": [
+            0.4835085436378005,
+            0.6342432819216356
+          ],
+          "n_episodes": 446,
+          "n_positive": 20
+        },
+        "judge_plan_insight": {
+          "auroc": 0.5724178403755869,
+          "ci95": [
+            0.4732955625758705,
+            0.6650997652582158
+          ],
+          "n_episodes": 446,
+          "n_positive": 20
+        }
+      },
+      "probe_minus_baseline": {
+        "tfidf": {
+          "diff": 0.06009389671361498,
+          "ci95": [
+            -0.01747390099151807,
+            0.15080431315828519
+          ],
+          "n_episodes": 446
+        },
+        "price_history": {
+          "diff": -0.07852112676056333,
+          "ci95": [
+            -0.16908123249299717,
+            -0.0094775552177411
+          ],
+          "n_episodes": 446
+        },
+        "judge_max": {
+          "diff": 0.35352112676056346,
+          "ci95": [
+            0.24235760862519454,
+            0.45667882734296844
+          ],
+          "n_episodes": 446
+        }
+      },
+      "transfer_leave_one_condition_out": {
+        "channel=none.framing=placebo.history_window=long.horizon=long_run": {
+          "auroc": 1.0,
+          "ci95": [
+            0.9999999999999999,
+            1.0
+          ],
+          "n_episodes": 49,
+          "n_positive": 2
+        },
+        "channel=none.framing=standard.history_window=long.horizon=long_run": {
+          "auroc": 0.8423913043478262,
+          "ci95": [
+            0.6879432624113475,
+            0.9644444444444444
+          ],
+          "n_episodes": 50,
+          "n_positive": 4
+        },
+        "channel=none.framing=standard.history_window=long.horizon=myopic": {
+          "auroc": null,
+          "ci95": null,
+          "n_episodes": 50,
+          "n_positive": 0
+        },
+        "channel=none.framing=standard.history_window=short.horizon=long_run": {
+          "auroc": null,
+          "ci95": null,
+          "n_episodes": 47,
+          "n_positive": 0
+        },
+        "channel=none.framing=standard.history_window=short.horizon=myopic": {
+          "auroc": null,
+          "ci95": null,
+          "n_episodes": 50,
+          "n_positive": 0
+        },
+        "channel=private.framing=standard.history_window=long.horizon=long_run": {
+          "auroc": 0.8854166666666666,
+          "ci95": [
+            0.7911231884057971,
+            0.9599869735128087
+          ],
+          "n_episodes": 50,
+          "n_positive": 2
+        },
+        "channel=private.framing=standard.history_window=long.horizon=myopic": {
+          "auroc": 1.0,
+          "ci95": [
+            0.9999999999999999,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 1
+        },
+        "channel=private.framing=standard.history_window=short.horizon=long_run": {
+          "auroc": 0.9945652173913043,
+          "ci95": [
+            0.96875,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 4
+        },
+        "channel=private.framing=standard.history_window=short.horizon=myopic": {
+          "auroc": 0.8504983388704319,
+          "ci95": [
+            0.7148966165413534,
+            0.9583587398373983
+          ],
+          "n_episodes": 50,
+          "n_positive": 7
+        }
+      },
+      "within_channel": {
+        "private": {
+          "auroc": 0.9650537634408602,
+          "ci95": [
+            0.9111752611234476,
+            0.9975949975949976
+          ],
+          "tpr_at_5fpr": 0.9285714285714286,
+          "n_episodes": 200,
+          "n_positive": 14
+        },
+        "none": {
+          "auroc": 0.9125,
+          "ci95": [
+            0.8152381365747917,
+            0.9945693254089718
+          ],
+          "tpr_at_5fpr": 0.5,
+          "n_episodes": 246,
+          "n_positive": 6
+        }
+      }
+    },
+    "0.15": {
+      "positive_share": 0.44170403587443946,
+      "n_positive": 197,
+      "probes": {
+        "11": {
+          "lr_mean": {
+            "auroc": 0.9696654638860008,
+            "ci95": [
+              0.9521328898783946,
+              0.9846668729475262
+            ],
+            "tpr_at_5fpr": 0.9543147208121827,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "lr_max": {
+            "auroc": 0.9592481601533036,
+            "ci95": [
+              0.9378866013637426,
+              0.9776833450241316
+            ],
+            "tpr_at_5fpr": 0.9695431472081218,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_mean": {
+            "auroc": 0.9309522353372882,
+            "ci95": [
+              0.9024456076827317,
+              0.9569116113301145
+            ],
+            "tpr_at_5fpr": 0.700507614213198,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_max": {
+            "auroc": 0.9321142437771389,
+            "ci95": [
+              0.9017949431933169,
+              0.9594659720705678
+            ],
+            "tpr_at_5fpr": 0.8324873096446701,
+            "n_episodes": 446,
+            "n_positive": 197
+          }
+        },
+        "14": {
+          "lr_mean": {
+            "auroc": 0.9638758077997269,
+            "ci95": [
+              0.9456346872541307,
+              0.9801193508316427
+            ],
+            "tpr_at_5fpr": 0.9543147208121827,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "lr_max": {
+            "auroc": 0.9569853016125415,
+            "ci95": [
+              0.933943761364284,
+              0.9764127784015225
+            ],
+            "tpr_at_5fpr": 0.9644670050761421,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_mean": {
+            "auroc": 0.9299533158012763,
+            "ci95": [
+              0.900536573047769,
+              0.9573968628153211
+            ],
+            "tpr_at_5fpr": 0.6294416243654822,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_max": {
+            "auroc": 0.9294028907508206,
+            "ci95": [
+              0.8961925242614835,
+              0.9567765712957832
+            ],
+            "tpr_at_5fpr": 0.7868020304568528,
+            "n_episodes": 446,
+            "n_positive": 197
+          }
+        },
+        "18": {
+          "lr_mean": {
+            "auroc": 0.9684422971072105,
+            "ci95": [
+              0.9505380733040492,
+              0.9845253888974178
+            ],
+            "tpr_at_5fpr": 0.9644670050761421,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "lr_max": {
+            "auroc": 0.9660978941145292,
+            "ci95": [
+              0.9487296109548539,
+              0.9834647196736491
+            ],
+            "tpr_at_5fpr": 0.9746192893401016,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_mean": {
+            "auroc": 0.9268546266283408,
+            "ci95": [
+              0.8969406557701034,
+              0.9540852579482993
+            ],
+            "tpr_at_5fpr": 0.6142131979695431,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_max": {
+            "auroc": 0.9274050516787964,
+            "ci95": [
+              0.8988472825828094,
+              0.952821506754733
+            ],
+            "tpr_at_5fpr": 0.700507614213198,
+            "n_episodes": 446,
+            "n_positive": 197
+          }
+        },
+        "22": {
+          "lr_mean": {
+            "auroc": 0.967749169265896,
+            "ci95": [
+              0.9485260671778816,
+              0.9834267564503923
+            ],
+            "tpr_at_5fpr": 0.9644670050761421,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "lr_max": {
+            "auroc": 0.9652824495953356,
+            "ci95": [
+              0.9466901609593743,
+              0.9819467447863838
+            ],
+            "tpr_at_5fpr": 0.9898477157360406,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_mean": {
+            "auroc": 0.9293009601859213,
+            "ci95": [
+              0.8995520465215308,
+              0.9562865060249529
+            ],
+            "tpr_at_5fpr": 0.6751269035532995,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_max": {
+            "auroc": 0.9277720017124335,
+            "ci95": [
+              0.8975676250957828,
+              0.9547028878472377
+            ],
+            "tpr_at_5fpr": 0.7258883248730964,
+            "n_episodes": 446,
+            "n_positive": 197
+          }
+        },
+        "25": {
+          "lr_mean": {
+            "auroc": 0.9765559700731861,
+            "ci95": [
+              0.9615585118151592,
+              0.9891184331864766
+            ],
+            "tpr_at_5fpr": 0.9746192893401016,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "lr_max": {
+            "auroc": 0.9616944937108841,
+            "ci95": [
+              0.9432238627937766,
+              0.9783549080702266
+            ],
+            "tpr_at_5fpr": 0.9898477157360406,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_mean": {
+            "auroc": 0.9341732411881026,
+            "ci95": [
+              0.9053349981619304,
+              0.9583611455155437
+            ],
+            "tpr_at_5fpr": 0.7411167512690355,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_max": {
+            "auroc": 0.9377204248465945,
+            "ci95": [
+              0.9112664895254043,
+              0.9629936848745626
+            ],
+            "tpr_at_5fpr": 0.8324873096446701,
+            "n_episodes": 446,
+            "n_positive": 197
+          }
+        },
+        "29": {
+          "lr_mean": {
+            "auroc": 0.9758424561188918,
+            "ci95": [
+              0.9613873417306505,
+              0.9878665645208243
+            ],
+            "tpr_at_5fpr": 0.9644670050761421,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "lr_max": {
+            "auroc": 0.9647931828838195,
+            "ci95": [
+              0.9455832288048392,
+              0.9811227764117385
+            ],
+            "tpr_at_5fpr": 0.9898477157360406,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_mean": {
+            "auroc": 0.9451409699712556,
+            "ci95": [
+              0.9199954401231064,
+              0.9672279378332412
+            ],
+            "tpr_at_5fpr": 0.7918781725888325,
+            "n_episodes": 446,
+            "n_positive": 197
+          },
+          "dom_max": {
+            "auroc": 0.9481377285792919,
+            "ci95": [
+              0.9245054056444186,
+              0.9698547539291713
+            ],
+            "tpr_at_5fpr": 0.8934010152284264,
+            "n_episodes": 446,
+            "n_positive": 197
+          }
+        }
+      },
+      "best_layer_by_cv": 25,
+      "shuffled_control": {
+        "auroc": 0.40017939779422257,
+        "ci95": [
+          0.34741389623978003,
+          0.4534629215184804
+        ],
+        "n_episodes": 446,
+        "n_positive": 197
+      },
+      "baselines": {
+        "tfidf": {
+          "auroc": 0.9720506391046418,
+          "ci95": [
+            0.9563494245789058,
+            0.9860116609644102
+          ],
+          "n_episodes": 446,
+          "n_positive": 197
+        },
+        "price_history": {
+          "auroc": 0.9996126638533831,
+          "ci95": [
+            0.9986658138137764,
+            1.0
+          ],
+          "n_episodes": 446,
+          "n_positive": 197
+        },
+        "judge_max": {
+          "auroc": 0.7773530670906977,
+          "ci95": [
+            0.7450407178071791,
+            0.8090586318987054
+          ],
+          "n_episodes": 446,
+          "n_positive": 197
+        },
+        "judge_plan_insight": {
+          "auroc": 0.7068375022934377,
+          "ci95": [
+            0.6687658940735428,
+            0.7436698445773606
+          ],
+          "n_episodes": 446,
+          "n_positive": 197
+        }
+      },
+      "probe_minus_baseline": {
+        "tfidf": {
+          "diff": 0.004505330968544219,
+          "ci95": [
+            -0.009402716969451172,
+            0.0180573106318805
+          ],
+          "n_episodes": 446
+        },
+        "price_history": {
+          "diff": -0.023056693780197035,
+          "ci95": [
+            -0.03781036148042746,
+            -0.011016239091816728
+          ],
+          "n_episodes": 446
+        },
+        "judge_max": {
+          "diff": 0.19920290298248833,
+          "ci95": [
+            0.1675444010211637,
+            0.23084953131268618
+          ],
+          "n_episodes": 446
+        }
+      },
+      "transfer_leave_one_condition_out": {
+        "channel=none.framing=placebo.history_window=long.horizon=long_run": {
+          "auroc": 0.7608695652173914,
+          "ci95": [
+            0.5551010101010101,
+            0.9583333333333334
+          ],
+          "n_episodes": 49,
+          "n_positive": 3
+        },
+        "channel=none.framing=standard.history_window=long.horizon=long_run": {
+          "auroc": 0.9568106312292358,
+          "ci95": [
+            0.8799385964912281,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 7
+        },
+        "channel=none.framing=standard.history_window=long.horizon=myopic": {
+          "auroc": 1.0,
+          "ci95": [
+            0.9999999999999999,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 1
+        },
+        "channel=none.framing=standard.history_window=short.horizon=long_run": {
+          "auroc": 1.0,
+          "ci95": [
+            0.9999999999999999,
+            1.0
+          ],
+          "n_episodes": 47,
+          "n_positive": 1
+        },
+        "channel=none.framing=standard.history_window=short.horizon=myopic": {
+          "auroc": null,
+          "ci95": null,
+          "n_episodes": 50,
+          "n_positive": 0
+        },
+        "channel=private.framing=standard.history_window=long.horizon=long_run": {
+          "auroc": 0.9333333333333333,
+          "ci95": [
+            0.7872340425531915,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 45
+        },
+        "channel=private.framing=standard.history_window=long.horizon=myopic": {
+          "auroc": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 47
+        },
+        "channel=private.framing=standard.history_window=short.horizon=long_run": {
+          "auroc": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 47
+        },
+        "channel=private.framing=standard.history_window=short.horizon=myopic": {
+          "auroc": 0.6467391304347826,
+          "ci95": [
+            0.2916666666666667,
+            1.0
+          ],
+          "n_episodes": 50,
+          "n_positive": 46
+        }
+      },
+      "within_channel": {
+        "private": {
+          "auroc": 0.836036036036036,
+          "ci95": [
+            0.685483870967742,
+            0.9432424549445827
+          ],
+          "tpr_at_5fpr": 1.0,
+          "n_episodes": 200,
+          "n_positive": 185
+        },
+        "none": {
+          "auroc": 0.905982905982906,
+          "ci95": [
+            0.8350255807117202,
+            0.9684913117789489
+          ],
+          "tpr_at_5fpr": 0.6666666666666666,
+          "n_episodes": 246,
+          "n_positive": 12
+        }
+      }
+    }
+  },
+  "exploratory_rolling_delta_ridge": {
+    "11": {
+      "r2_mean": 0.8589038514684884,
+      "r2_folds": [
+        0.902735997784447,
+        0.8642436039367536,
+        0.8583994453403618,
+        0.8079619555085654,
+        0.8611782547723138
+      ]
+    },
+    "14": {
+      "r2_mean": 0.8526811191918563,
+      "r2_folds": [
+        0.8972859992881849,
+        0.8524599451263555,
+        0.8584407883734853,
+        0.7962519787969808,
+        0.8589668843742747
+      ]
+    },
+    "18": {
+      "r2_mean": 0.8612186597735667,
+      "r2_folds": [
+        0.9001841696665528,
+        0.8724027205269137,
+        0.861616292163417,
+        0.8108198837495605,
+        0.8610702327613893
+      ]
+    },
+    "22": {
+      "r2_mean": 0.8566837239952487,
+      "r2_folds": [
+        0.901107734223213,
+        0.8637111655812919,
+        0.8645117165775347,
+        0.7956498347898855,
+        0.8584381688043183
+      ]
+    },
+    "25": {
+      "r2_mean": 0.8675084512641167,
+      "r2_folds": [
+        0.9016073948094665,
+        0.8760153247246043,
+        0.8747460417243046,
+        0.8165990781403042,
+        0.8685744169219034
+      ]
+    },
+    "29": {
+      "r2_mean": 0.8614285617899705,
+      "r2_folds": [
+        0.9009852938798713,
+        0.8677140894549997,
+        0.870076263371177,
+        0.8044624197943495,
+        0.863904742449455
+      ]
+    }
+  }
+}

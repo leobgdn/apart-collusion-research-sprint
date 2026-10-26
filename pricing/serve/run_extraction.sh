@@ -3,7 +3,7 @@
 #
 #   bash /mnt/c/Users/leobo/OneDrive/Documents/GitHub/apart-collusion-research-sprint/pricing/serve/run_extraction.sh main_v1
 #
-# 1. holds ~/collusion_shared/GPU_BUSY (the Colosseum session waits on it)
+# 1. holds ~/collusion_shared/GPU_BUSY (other GPU jobs wait on it)
 # 2. stops the vLLM server and waits until the GPU is free
 # 3. extracts the scored-window turns first, then the remaining turns
 # 4. releases GPU_BUSY, whatever happened (restart vLLM separately)

@@ -1,4 +1,4 @@
-"""Residual-stream activations for every logged turn (SPEC Section 10).
+"""Residual-stream activations for every logged turn.
 
 Run INSIDE WSL with the vLLM venv (it has CUDA torch + transformers), after the
 vLLM server is stopped so the GPU is free:

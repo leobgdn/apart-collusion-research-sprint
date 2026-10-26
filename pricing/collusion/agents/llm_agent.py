@@ -22,7 +22,7 @@ Seeds: each request's sampling seed is derived from (episode seed, period,
 agent index, attempt) so a retry draws a fresh sample while staying reproducible
 in principle. Batched serving can still introduce nondeterminism (batch
 composition changes floating-point reduction order), so identical seeds do not
-guarantee identical text; this is recorded in DECISIONS.md.
+guarantee identical text.
 """
 
 from __future__ import annotations

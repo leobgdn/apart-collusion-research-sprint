@@ -1,6 +1,6 @@
 """Resumable, wall-clock-guarded, balanced-batch sweep driver.
 
-* Resumable (SPEC Section 3 rule 5): every run is keyed by (condition_id, seed)
+* Resumable: every run is keyed by (condition_id, seed)
   and completed runs are skipped on restart. On resume the turn log is first
   compacted to drop turns of any episode without a completed summary, so a
   crash between writing turns and writing the summary cannot duplicate turns.

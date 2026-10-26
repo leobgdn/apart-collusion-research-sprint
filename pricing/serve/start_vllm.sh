@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Start the shared vLLM server for Qwen3-8B inside WSL2. Settings are recorded in
-# DECISIONS.md; change them here only, and re-record.
+# Start the shared vLLM server for Qwen3-8B inside WSL2.
 #
 #   bash /mnt/c/Users/leobo/OneDrive/Documents/GitHub/apart-collusion-research-sprint/pricing/serve/start_vllm.sh
 #
@@ -25,9 +24,8 @@ export VLLM_USE_FLASHINFER_SAMPLER=0
 #   are used, and all of those are logged per turn.
 # --max-num-seqs 64: 32 concurrent episodes x 2 sellers whose requests are sent
 #   in parallel each period.
-# --enable-auto-tool-choice --tool-call-parser hermes: for the Track B Colosseum
-#   check, whose agents act only via OpenAI `tools`. Requests without `tools`
-#   (the pricing game) are unaffected.
+# --enable-auto-tool-choice --tool-call-parser hermes: tool calling for other
+#   experiments; requests without `tools` (the pricing game) are unaffected.
 vllm serve "$MODEL" \
   --served-model-name "$MODEL" \
   --dtype bfloat16 \
