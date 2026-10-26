@@ -139,6 +139,25 @@ Possible contribution statements, all supported by the data:
 - **Tokens:** 57.1M prompt tokens and 5.0M output tokens in the main sweep.
   Median episode wall time was 654 s.
 - **Cost:** $0, all local.
+- **Total compute (one RTX 3090, GPU wall-clock):** about **18 GPU-hours**
+  for the whole Track A project, of which about 5 h generated text and
+  13 h extracted activations. Sweep spans come from the first and last logged
+  turn timestamps; none of these logs has a gap longer than 10 min.
+
+  | step | GPU hours | source |
+  |---|---|---|
+  | pilot_v1 (45 episodes) | 0.27 | log timestamps |
+  | throughput window (3 levels x 3 min) | ~0.15 | gate2.md |
+  | diag_thinking (thinking on, no usable data) | 1.00 | the 60-min cap, gate2.md |
+  | minipilot_v2 (18 episodes) | 0.15 | log timestamps |
+  | diag_grid (18 episodes) | 0.14 | log timestamps |
+  | **main_v1 sweep (450 episodes)** | **2.65** | log timestamps (gate3.md: 159.0 min) |
+  | judge over main_v1 | ≤ 0.7 | upper bound: from the end of the sweep (23:39) to the judge file's last write (00:21); judge records carry no timestamps |
+  | activation extraction (72,000 turns) | ~13.2 | 00:24-13:37 on 25 Oct, wall-clock; inflated by 3 interruptions and GPU-memory spill slowdowns (A18 item 7). The second subset alone ran 3.0 h uninterrupted |
+  | probes | 0 (CPU) | |
+
+  Setup (about 12 min) is excluded. The extraction figure is elapsed time, not
+  an efficient-run estimate; say so if it is quoted.
 
 ## A6. Design: the 9 cells (pre-registered, binding; commit 48fb015)
 
@@ -563,34 +582,139 @@ and the extraction checks.
 
 ## A19. Sources
 
-Cited in the project:
+Every entry below was checked on 2026-10-25 against its arXiv, proceedings or
+publisher listing (title, authors, venue, identifier). "Use" says where it
+fits in the paper. Only abstracts and listings were read, not full texts, so
+cite each for its headline claim only. Where an entry has a caveat, it is
+stated.
 
-- **Calvano, E., Calzolari, G., Denicolò, V., & Pastorello, S. (2020).**
-  Artificial intelligence, algorithmic pricing, and collusion. *American
-  Economic Review*, 110(10), 3267-3297. The market model, parameters and
-  benchmark prices (Nash 1.4729, monopoly 1.9249) are reproduced and checked
-  in the tests.
-- **Colosseum: Auditing Collusion in Cooperative Multi-Agent Systems.**
-  arXiv:2602.15198; code at https://github.com/umass-ai-safety/colosseum. It
-  is the environment for Track B, and its "collusion on paper" finding is the
-  closest prior result to our H5.
-- **Qwen3-8B** (Qwen team), Hugging Face `Qwen/Qwen3-8B`, revision b968826.
-  For a citation, the Qwen3 Technical Report (arXiv:2505.09388); verify
-  before citing.
+**Core (the project depends on these)**
 
-Added in the prose draft for related work (verify, then keep or drop):
+1. **Calvano, E., Calzolari, G., Denicolò, V., & Pastorello, S. (2020).**
+   Artificial intelligence, algorithmic pricing, and collusion. *American
+   Economic Review*, 110(10), 3267-3297. *Use:* the market model, parameters
+   and benchmarks (Nash 1.4729, monopoly 1.9249), reproduced and checked in
+   the tests.
+2. **Fish, S., Gonczarowski, Y. A., & Shorrer, R. I. (2024).** Algorithmic
+   collusion by large language models. arXiv:2404.00806 (v5, Mar 2026).
+   *Use:* the closest prior work. LLM pricing agents (GPT-4 in v1) reach
+   supracompetitive prices; small prompt wording changes matter; later
+   versions point to price-war concerns as one driver. Directly comparable
+   to our prompt-sensitivity and price-war observations.
+3. **Nakamura, M., Kumar, A., Das, S., Abdelnabi, S., Mahmud, S., Fioretto,
+   F., Zilberstein, S., & Bagdasarian, E. (2026).** Colosseum: Auditing
+   collusion in cooperative multi-agent systems. arXiv:2602.15198; code at
+   github.com/umass-ai-safety/colosseum. *Use:* the "collusion on paper"
+   finding (agents plan collusion in text but often act non-collusively),
+   the closest prior result to H5; also piloted as this project's Plan A.
+   Caveat: a NeurIPS 2026 poster page with the same title exists, but the
+   acceptance wasn't confirmed; cite the arXiv version.
+4. **Qwen Team / Yang, A., et al. (2025).** Qwen3 technical report.
+   arXiv:2505.09388. *Use:* the model (Qwen3-8B, revision b968826) and its
+   switchable thinking mode.
+5. **Kwon, W., et al. (2023).** Efficient memory management for large
+   language model serving with PagedAttention. *SOSP 2023*.
+   doi:10.1145/3600006.3613165; arXiv:2309.06180. *Use:* vLLM, the serving
+   engine.
 
-- Fish, S., Gonczarowski, Y. A., & Shorrer, R. I. (2024). Algorithmic
-  collusion by large language models. arXiv:2404.00806. The closest LLM
-  pricing-collusion paper.
-- Alain, G., & Bengio, Y. (2016). Understanding intermediate layers using
-  linear classifier probes. arXiv:1610.01644. Linear probing method.
+**Algorithmic collusion (economics)**
+
+6. **Klein, T. (2021).** Autonomous algorithmic collusion: Q-learning under
+   sequential pricing. *RAND Journal of Economics*, 52(3), 538-558.
+   doi:10.1111/1756-2171.12383. *Use:* with a small discrete price set, RL
+   agents converge to collusion; with a larger set, to supracompetitive
+   cycles. Relevant to our 31-price menu.
+7. **Assad, S., Clark, R., Ershov, D., & Xu, L. (2024).** Algorithmic pricing
+   and competition: Empirical evidence from the German retail gasoline
+   market. *Journal of Political Economy*, 132(3), 723-771.
+   doi:10.1086/726906. *Use:* real-world evidence. In duopolies, margins rose
+   only when both stations adopted pricing software.
+8. **Harrington, J. E. (2018).** Developing competition law for collusion by
+   autonomous artificial agents. *Journal of Competition Law & Economics*.
+   *Use:* the legal framing (collusion without human agreement is not
+   clearly unlawful). Caveat: volume and pages weren't confirmed; some
+   sources give the working-paper title "... autonomous price-setting
+   agents". Check before citing.
+9. **Lin, R. Y., Ojha, S., Cai, K., & Chen, M. F. (2024).** Strategic
+   collusion of LLM agents: Market division in multi-commodity competitions.
+   arXiv:2410.00031 (NeurIPS 2024 workshop). *Use:* other LLM-agent market
+   collusion, here without explicit collusion instructions.
+
+**Multi-agent AI risk and secret collusion**
+
+10. **Hammond, L., et al. (2025).** Multi-agent risks from advanced AI.
+    Cooperative AI Foundation Technical Report #1, arXiv:2502.14143.
+    *Use:* motivation. Collusion is one of the report's three failure modes
+    (with miscoordination and conflict).
+11. **Motwani, S. R., Baranchuk, M., Strohmeier, M., Bolina, V., Torr, P.,
+    Hammond, L., & Schroeder de Witt, C. (2024).** Secret collusion among AI
+    agents: Multi-agent deception via steganography. *NeurIPS 2024*;
+    arXiv:2402.07510. *Use:* why text monitoring may miss collusion
+    (steganography); motivates looking at actions and activations.
+12. **Mathew, Y., Matthews, O., McCarthy, R., Velja, J., Schroeder de Witt,
+    C., Cope, D., & Schoots, N. (2024).** Hidden in plain text: Emergence and
+    mitigation of steganographic collusion in LLMs. arXiv:2410.03768
+    (NeurIPS 2024 SafeGenAI workshop). *Use:* steganographic collusion can
+    emerge from misspecified rewards and survive monitoring and paraphrasing.
+
+**Monitoring and oversight**
+
+13. **Greenblatt, R., Shlegeris, B., Sachan, K., & Roger, F. (2024).** AI
+    control: Improving safety despite intentional subversion. *ICML 2024*,
+    PMLR 235, 16295-16336. *Use:* the monitoring and control framing for
+    "what should an overseer watch".
+14. **Baker, B., et al. (2025).** Monitoring reasoning models for misbehavior
+    and the risks of promoting obfuscation. arXiv:2503.11926. *Use:* LLM
+    monitors that read the chain of thought catch reward hacking far better
+    than action-only monitors. That fits our H5 direction (text flags much
+    more than actions). The contrast is that here many text flags look like
+    false positives (36-51% of no-channel plans flagged), and thinking was off
+    in our runs.
+15. **Korbak, T., Balesni, M., et al. (2025).** Chain of thought
+    monitorability: A new and fragile opportunity for AI safety.
+    arXiv:2507.11473. *Use:* the text-monitoring debate. Relevant to why the
+    plan/insight fields are worth judging.
+
+**Probing**
+
+16. **Alain, G., & Bengio, Y. (2016).** Understanding intermediate layers
+    using linear classifier probes. arXiv:1610.01644. *Use:* the linear-probe
+    method.
+17. **Hewitt, J., & Liang, P. (2019).** Designing and interpreting probes
+    with control tasks. *EMNLP-IJCNLP 2019*, 2733-2743.
+    doi:10.18653/v1/D19-1275. *Use:* justifies the shuffled-label control
+    and the "probe vs baseline" framing (selectivity).
+18. **Azaria, A., & Mitchell, T. (2023).** The internal state of an LLM knows
+    when it's lying. *Findings of EMNLP 2023*, 967-976.
+    doi:10.18653/v1/2023.findings-emnlp.68. *Use:* earlier work on probing
+    activations for behaviour-relevant labels.
+19. **Goldowsky-Dill, N., Chughtai, B., Heimersheim, S., & Hobbhahn, M.
+    (2025).** Detecting strategic deception with linear probes. *ICML 2025*,
+    PMLR 267, 19755-19786; arXiv:2502.03407 ("... using linear probes").
+    *Use:* the closest probe-for-misbehaviour work. AUROC 0.96-0.999, but
+    the authors judge it not yet robust and report sensitivity to layer
+    choice, which matches our caution about best-layer selection.
+
+**LLM-as-judge**
+
+20. **Zheng, L., et al. (2023).** Judging LLM-as-a-judge with MT-Bench and
+    Chatbot Arena. *NeurIPS 2023 Datasets and Benchmarks*. *Use:* LLM judges
+    and their known biases, including self-enhancement.
+21. **Panickssery, A., Bowman, S. R., & Feng, S. (2024).** LLM evaluators
+    recognize and favor their own generations. *NeurIPS 2024*;
+    arXiv:2404.13076. *Use:* supports the self-preference limitation (the
+    Qwen3-8B judge scoring Qwen3-8B transcripts).
+
+Considered and left out: "A survey of collusion risk in LLM-powered
+multi-agent systems" (NeurIPS 2025 poster 133205). It looks relevant, but its
+authors couldn't be confirmed.
 
 Software used: vLLM 0.32.0, PyTorch 2.13, Hugging Face transformers 5.19,
 scikit-learn 1.9, statsmodels 0.15, NumPy, pandas, SciPy and matplotlib.
 
 **Add here any other sources the author used** (the hackathon brief, papers
-read): the repo only records the ones above.
+read). Everything above was found by search, not taken from the author's
+reading list.
 
 ## A20. Reproducibility pointers
 
