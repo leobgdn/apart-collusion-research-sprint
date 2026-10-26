@@ -1,0 +1,839 @@
+{
+  "run_id": "main_v1",
+  "data": {
+    "episodes_completed": 450,
+    "complete_batches": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "n_complete_batches": 25,
+    "episodes_in_complete_batches": 450,
+    "pathological_by_cell": {
+      "channel=none.framing=placebo.history_window=long.horizon=long_run": 1,
+      "channel=none.framing=standard.history_window=short.horizon=long_run": 3
+    },
+    "episodes_analysed": 446,
+    "benchmarks": {
+      "price_nash": 1.4729266600306228,
+      "price_monopoly": 1.9249809190177618
+    }
+  },
+  "cost_map": {
+    "H1": {
+      "contrast": "channel: private - none",
+      "delta": {
+        "diff": 1.771007474759855,
+        "ci95": [
+          1.6880697646056748,
+          1.8477533259116519
+        ]
+      },
+      "joint_reward": {
+        "diff": 0.405786690425769,
+        "ci95": [
+          0.3868605585453586,
+          0.4232767097149996
+        ]
+      },
+      "consumer_surplus": {
+        "diff": -0.4174424698589926,
+        "ci95": [
+          -0.43912009611988073,
+          -0.3954382559934431
+        ]
+      }
+    },
+    "H2": {
+      "contrast": "history_window: long - short",
+      "delta": {
+        "diff": 0.0919445005614763,
+        "ci95": [
+          0.013739235931786489,
+          0.1710256337286154
+        ]
+      },
+      "joint_reward": {
+        "diff": 0.021067022650907097,
+        "ci95": [
+          0.0037592521088808395,
+          0.03967179325312092
+        ]
+      },
+      "consumer_surplus": {
+        "diff": -0.021184355897176044,
+        "ci95": [
+          -0.04359634609930711,
+          0.0003747417555834126
+        ]
+      }
+    },
+    "H3": {
+      "contrast": "horizon: long_run - myopic",
+      "delta": {
+        "diff": 0.1531087444322221,
+        "ci95": [
+          0.07414789440651615,
+          0.23292355495660175
+        ]
+      },
+      "joint_reward": {
+        "diff": 0.03508143899100191,
+        "ci95": [
+          0.016613281785519393,
+          0.053187482812066145
+        ]
+      },
+      "consumer_surplus": {
+        "diff": -0.04694095450104263,
+        "ci95": [
+          -0.06958894638943766,
+          -0.02464945678962809
+        ]
+      }
+    },
+    "placebo": {
+      "contrast": "framing: placebo - standard (baseline cell)",
+      "delta": {
+        "diff": 0.11232036514668864,
+        "ci95": [
+          -0.1587312264787973,
+          0.37562980870210316
+        ]
+      },
+      "joint_reward": {
+        "diff": 0.0257356955799799,
+        "ci95": [
+          -0.03726413377828219,
+          0.08673578152460197
+        ]
+      },
+      "consumer_surplus": {
+        "diff": -0.006490604442292658,
+        "ci95": [
+          -0.07640841934401559,
+          0.06486388698370155
+        ]
+      }
+    }
+  },
+  "predict_verify": {
+    "delta": {
+      "n_splits": 28,
+      "mean_mae_model": 0.19010218707745524,
+      "mean_mae_grand_mean": 1.01191913503303,
+      "model_better_in": 28,
+      "splits": [
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "no channel, long history, myopic"
+          ],
+          "mae_model": 0.2018778662322932,
+          "mae_grand_mean": 1.0559856266111813
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "no channel, short history, long-run"
+          ],
+          "mae_model": 0.3395249693084553,
+          "mae_grand_mean": 0.974886940454788
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "no channel, short history, myopic"
+          ],
+          "mae_model": 0.26935880575461635,
+          "mae_grand_mean": 1.1377332832133118
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.1977022721560439,
+          "mae_grand_mean": 0.7376974896597985
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.19584329631834274,
+          "mae_grand_mean": 0.7384169618088319
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.22542513527259123,
+          "mae_grand_mean": 0.7204748528097524
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.21732078340694955,
+          "mae_grand_mean": 0.750776163913029
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "no channel, short history, long-run"
+          ],
+          "mae_model": 0.08174346228247842,
+          "mae_grand_mean": 1.2350520393472042
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "no channel, short history, myopic"
+          ],
+          "mae_model": 0.342451387063494,
+          "mae_grand_mean": 1.3985553646786888
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.1958432963183438,
+          "mae_grand_mean": 0.9328213138291108
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.11151284853073715,
+          "mae_grand_mean": 0.933540785978144
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.084028789787312,
+          "mae_grand_mean": 0.9155986769790646
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.225425135272588,
+          "mae_grand_mean": 0.9458999880823413
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "no channel, short history, myopic"
+          ],
+          "mae_model": 0.19919264220077637,
+          "mae_grand_mean": 1.3165937824566343
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.12567713276450504,
+          "mae_grand_mean": 0.8805972592743481
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.05216162332824116,
+          "mae_grand_mean": 0.8813167314233814
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.11132530123672497,
+          "mae_grand_mean": 0.863374622424302
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.15525897171874847,
+          "mae_grand_mean": 0.8936759335275786
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.14275956456363043,
+          "mae_grand_mean": 0.9939776211611834
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.11607382041436683,
+          "mae_grand_mean": 0.9946970933102168
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.14612029558255257,
+          "mae_grand_mean": 0.9767549843111374
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.16237807581453453,
+          "mae_grand_mean": 1.007056295414414
+        },
+        {
+          "held_out": [
+            "channel, long history, long-run",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.19983783189564494,
+          "mae_grand_mean": 1.1779591391405468
+        },
+        {
+          "held_out": [
+            "channel, long history, long-run",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.3419937446626403,
+          "mae_grand_mean": 1.153975916000363
+        },
+        {
+          "held_out": [
+            "channel, long history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.26935880575461535,
+          "mae_grand_mean": 1.1944796887545748
+        },
+        {
+          "held_out": [
+            "channel, long history, myopic",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.07145009228079209,
+          "mae_grand_mean": 1.1549376346642226
+        },
+        {
+          "held_out": [
+            "channel, long history, myopic",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.3416856005068605,
+          "mae_grand_mean": 1.195441407418434
+        },
+        {
+          "held_out": [
+            "channel, short history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.19952968773986748,
+          "mae_grand_mean": 1.1714581842782503
+        }
+      ]
+    },
+    "label": {
+      "n_splits": 28,
+      "mean_mae_model": 0.03588346889803042,
+      "mean_mae_grand_mean": 0.026702741702741704,
+      "model_better_in": 11,
+      "splits": [
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "no channel, long history, myopic"
+          ],
+          "mae_model": 0.06989583333333321,
+          "mae_grand_mean": 0.02
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "no channel, short history, long-run"
+          ],
+          "mae_model": 0.03666666666666667,
+          "mae_grand_mean": 0.02
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "no channel, short history, myopic"
+          ],
+          "mae_model": 0.04000000000000001,
+          "mae_grand_mean": 0.02
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.02989583333333335,
+          "mae_grand_mean": 0.01
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.05000000000000003,
+          "mae_grand_mean": 0.02
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.0398429319371728,
+          "mae_grand_mean": 0.03653198653198653
+        },
+        {
+          "held_out": [
+            "no channel, long history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.03652777777777781,
+          "mae_grand_mean": 0.03653198653198653
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "no channel, short history, long-run"
+          ],
+          "mae_model": 0.029999999999999853,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "no channel, short history, myopic"
+          ],
+          "mae_model": 0.01093750000000019,
+          "mae_grand_mean": 0.030303030303030304
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.02000000000000003,
+          "mae_grand_mean": 0.016936026936026936
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.029583333333333482,
+          "mae_grand_mean": 0.030303030303030304
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.009791666666666692,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, long history, myopic",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.030000000000000013,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "no channel, short history, myopic"
+          ],
+          "mae_model": 0.06999999999999988,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.04000000000000016,
+          "mae_grand_mean": 0.01666666666666667
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.030000000000000047,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.030000000000000096,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, short history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.05000000000000018,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, long history, long-run"
+          ],
+          "mae_model": 0.016944444444444415,
+          "mae_grand_mean": 0.016936026936026936
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.03000000000000002,
+          "mae_grand_mean": 0.030303030303030304
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.019999999999999945,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "no channel, short history, myopic",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.029270833333333274,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "channel, long history, long-run",
+            "channel, long history, myopic"
+          ],
+          "mae_model": 0.0697916666666668,
+          "mae_grand_mean": 0.016936026936026936
+        },
+        {
+          "held_out": [
+            "channel, long history, long-run",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.016423611111111035,
+          "mae_grand_mean": 0.023164983164983166
+        },
+        {
+          "held_out": [
+            "channel, long history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.03999999999999988,
+          "mae_grand_mean": 0.023164983164983166
+        },
+        {
+          "held_out": [
+            "channel, long history, myopic",
+            "channel, short history, long-run"
+          ],
+          "mae_model": 0.02968586387434551,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "channel, long history, myopic",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.0297916666666666,
+          "mae_grand_mean": 0.03
+        },
+        {
+          "held_out": [
+            "channel, short history, long-run",
+            "channel, short history, myopic"
+          ],
+          "mae_model": 0.06968749999999999,
+          "mae_grand_mean": 0.049898989898989894
+        }
+      ]
+    }
+  },
+  "quadrants": {
+    "message (keyword, exploratory)": {
+      "cutoff": 0.5,
+      "column": "kw_message",
+      "n": 200,
+      "h5_mcnemar": {
+        "text_only": 158,
+        "action_only": 3,
+        "p_two_sided": 4.760049405558679e-43
+      },
+      "overall": {
+        "both": 0.02,
+        "text_only": 0.79,
+        "action_only": 0.015,
+        "neither": 0.175
+      },
+      "per_cell": {
+        "channel=private.framing=standard.history_window=long.horizon=long_run": {
+          "both": 0.02,
+          "text_only": 0.96,
+          "action_only": 0.0,
+          "neither": 0.02
+        },
+        "channel=private.framing=standard.history_window=long.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.68,
+          "action_only": 0.0,
+          "neither": 0.32
+        },
+        "channel=private.framing=standard.history_window=short.horizon=long_run": {
+          "both": 0.04,
+          "text_only": 0.86,
+          "action_only": 0.02,
+          "neither": 0.08
+        },
+        "channel=private.framing=standard.history_window=short.horizon=myopic": {
+          "both": 0.02,
+          "text_only": 0.66,
+          "action_only": 0.04,
+          "neither": 0.28
+        }
+      }
+    },
+    "plan/insight (keyword, exploratory)": {
+      "cutoff": 0.5,
+      "column": "kw_plan_insight",
+      "n": 446,
+      "h5_mcnemar": {
+        "text_only": 64,
+        "action_only": 6,
+        "p_two_sided": 2.44272646814786e-13
+      },
+      "overall": {
+        "both": 0.006726457399103139,
+        "text_only": 0.14349775784753363,
+        "action_only": 0.013452914798206279,
+        "neither": 0.8363228699551569
+      },
+      "per_cell": {
+        "channel=none.framing=placebo.history_window=long.horizon=long_run": {
+          "both": 0.0,
+          "text_only": 0.0,
+          "action_only": 0.0,
+          "neither": 1.0
+        },
+        "channel=none.framing=standard.history_window=long.horizon=long_run": {
+          "both": 0.0,
+          "text_only": 0.0,
+          "action_only": 0.04,
+          "neither": 0.96
+        },
+        "channel=none.framing=standard.history_window=long.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.0,
+          "action_only": 0.0,
+          "neither": 1.0
+        },
+        "channel=none.framing=standard.history_window=short.horizon=long_run": {
+          "both": 0.0,
+          "text_only": 0.0,
+          "action_only": 0.0,
+          "neither": 1.0
+        },
+        "channel=none.framing=standard.history_window=short.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.0,
+          "action_only": 0.0,
+          "neither": 1.0
+        },
+        "channel=private.framing=standard.history_window=long.horizon=long_run": {
+          "both": 0.02,
+          "text_only": 0.62,
+          "action_only": 0.0,
+          "neither": 0.36
+        },
+        "channel=private.framing=standard.history_window=long.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.04,
+          "action_only": 0.0,
+          "neither": 0.96
+        },
+        "channel=private.framing=standard.history_window=short.horizon=long_run": {
+          "both": 0.04,
+          "text_only": 0.54,
+          "action_only": 0.02,
+          "neither": 0.4
+        },
+        "channel=private.framing=standard.history_window=short.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.08,
+          "action_only": 0.06,
+          "neither": 0.86
+        }
+      }
+    },
+    "message (judge)": {
+      "cutoff": 0.6,
+      "column": "judge_message",
+      "n": 200,
+      "h5_mcnemar": {
+        "text_only": 193,
+        "action_only": 0,
+        "p_two_sided": 1.5930919111324523e-58
+      },
+      "overall": {
+        "both": 0.035,
+        "text_only": 0.965,
+        "action_only": 0.0,
+        "neither": 0.0
+      },
+      "per_cell": {
+        "channel=private.framing=standard.history_window=long.horizon=long_run": {
+          "both": 0.02,
+          "text_only": 0.98,
+          "action_only": 0.0,
+          "neither": 0.0
+        },
+        "channel=private.framing=standard.history_window=long.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 1.0,
+          "action_only": 0.0,
+          "neither": 0.0
+        },
+        "channel=private.framing=standard.history_window=short.horizon=long_run": {
+          "both": 0.06,
+          "text_only": 0.94,
+          "action_only": 0.0,
+          "neither": 0.0
+        },
+        "channel=private.framing=standard.history_window=short.horizon=myopic": {
+          "both": 0.06,
+          "text_only": 0.94,
+          "action_only": 0.0,
+          "neither": 0.0
+        }
+      }
+    },
+    "plan/insight (judge)": {
+      "cutoff": 0.6,
+      "column": "judge_plan_insight",
+      "n": 446,
+      "h5_mcnemar": {
+        "text_only": 292,
+        "action_only": 0,
+        "p_two_sided": 2.513455854232436e-88
+      },
+      "overall": {
+        "both": 0.020179372197309416,
+        "text_only": 0.6547085201793722,
+        "action_only": 0.0,
+        "neither": 0.3251121076233184
+      },
+      "per_cell": {
+        "channel=none.framing=placebo.history_window=long.horizon=long_run": {
+          "both": 0.0,
+          "text_only": 0.7551020408163265,
+          "action_only": 0.0,
+          "neither": 0.24489795918367346
+        },
+        "channel=none.framing=standard.history_window=long.horizon=long_run": {
+          "both": 0.04,
+          "text_only": 0.44,
+          "action_only": 0.0,
+          "neither": 0.52
+        },
+        "channel=none.framing=standard.history_window=long.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.36,
+          "action_only": 0.0,
+          "neither": 0.64
+        },
+        "channel=none.framing=standard.history_window=short.horizon=long_run": {
+          "both": 0.0,
+          "text_only": 0.5106382978723404,
+          "action_only": 0.0,
+          "neither": 0.48936170212765956
+        },
+        "channel=none.framing=standard.history_window=short.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.38,
+          "action_only": 0.0,
+          "neither": 0.62
+        },
+        "channel=private.framing=standard.history_window=long.horizon=long_run": {
+          "both": 0.02,
+          "text_only": 0.98,
+          "action_only": 0.0,
+          "neither": 0.0
+        },
+        "channel=private.framing=standard.history_window=long.horizon=myopic": {
+          "both": 0.0,
+          "text_only": 0.76,
+          "action_only": 0.0,
+          "neither": 0.24
+        },
+        "channel=private.framing=standard.history_window=short.horizon=long_run": {
+          "both": 0.06,
+          "text_only": 0.94,
+          "action_only": 0.0,
+          "neither": 0.0
+        },
+        "channel=private.framing=standard.history_window=short.horizon=myopic": {
+          "both": 0.06,
+          "text_only": 0.76,
+          "action_only": 0.0,
+          "neither": 0.18
+        }
+      }
+    }
+  },
+  "quadrants_note": "judge thresholds from data/judge_thresholds.json: {'plan_insight': 0.6, 'message': 0.6}"
+}

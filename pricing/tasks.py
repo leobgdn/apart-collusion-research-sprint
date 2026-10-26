@@ -69,13 +69,17 @@ def gate2_data(argv=None) -> int:
 
 
 def results(argv=None) -> int:
-    """Stages 4-5 from the saved logs: effects, judge validation, Stage 4 tables
-    and figures, probes (needs data/activations from probes/extract.py)."""
+    """Every results/ table from the saved logs: effects, judge validation,
+    Stage 4 tables and figures (plus 0.15 / 0.5 label sensitivity), per-cell
+    table, probes (needs data/activations from probes/extract.py)."""
     run = ["--run-id", "main_v1", *(argv or [])]
     steps = [
         (PY, "-m", "collusion.analysis.effects", *run),
         (PY, "-m", "collusion.analysis.judge_validation", "score", *run),
         (PY, "-m", "collusion.analysis.stage4", *run),
+        (PY, "-m", "collusion.analysis.stage4", *run, "--threshold", "0.15", "--no-figures"),
+        (PY, "-m", "collusion.analysis.stage4", *run, "--threshold", "0.5", "--no-figures"),
+        (PY, "-m", "collusion.analysis.per_cell", *run),
         (PY, "-m", "collusion.probes.train_eval", *run),
     ]
     for step in steps:

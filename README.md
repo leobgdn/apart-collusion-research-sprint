@@ -1,7 +1,14 @@
-# When do LLM pricing agents collude?
+# Talking Their Way Out of a Price War
 
-Code and results for an Apart Research sprint project on multi-agent LLM
-collusion. Two Qwen3-8B sellers play a repeated logit-Bertrand pricing game
+**Paper:** [Talking Their Way Out of a Price War: Communication, Collusion and
+Monitoring in LLM Pricing Agents](paper.pdf) (Leó Bogdaneris, University of
+Wisconsin–Madison). Apart Research AI Collusion Research Sprint, 23–25 October
+2026.
+
+This repository has the code, pre-registration, per-episode data and every
+result table behind the paper.
+
+Two Qwen3-8B sellers play a repeated logit-Bertrand pricing game
 (Calvano et al. 2020 parameters). We vary three task features in a
 pre-registered factorial design and ask:
 
@@ -51,7 +58,8 @@ before any main-sweep data existed (commit `48fb015`).
   significantly better (0.996 and 1.000). The LLM judge is weak (0.564 and 0.777): it
   flags 36-51% of no-channel plans and 75% of placebo plans.
 
-Full tables: [`pricing/results/`](pricing/results/).
+Full tables: [`pricing/results/`](pricing/results/) (per-cell table: `per_cell.md`;
+label-threshold sensitivity: `stage4_t0.15.md`, `stage4_t0.5.md`).
 
 | | |
 |---|---|
@@ -74,7 +82,8 @@ pricing/
   serve/               WSL2 + vLLM setup and server checks
   tests/               test suite
   results/             result tables (Markdown + JSON) and figures
-  data/                judge-validation labels (raw logs not in git, see below)
+  data/episodes/       one JSON summary per episode (main sweep and pilots)
+  data/                judge-validation labels
 ```
 
 How to reproduce: [`pricing/README.md`](pricing/README.md).
@@ -84,7 +93,8 @@ How to reproduce: [`pricing/README.md`](pricing/README.md).
 - **Judge validation labels** (`pricing/data/judge_validation*.csv`): Claude
   wrote LLM pre-labels and the author reviewed all 30 in full, changing none.
   The labels are not independent human annotations.
-- **Raw data are not in the repository.** The turn logs (about 610 MB),
-  judge outputs and activations (3.4 GB) are available on request. Every table
-  in `pricing/results/` is generated from them by the scripts here.
+- **Raw data are not in the repository.** The turn logs (about 550 MB for the
+  main sweep), judge outputs and activations (3.4 GB) are available on request.
+  Every table in `pricing/results/` is generated from them by
+  `python tasks.py results`.
 - Compute: about 18 GPU-hours on one RTX 3090.

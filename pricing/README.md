@@ -1,6 +1,6 @@
 # Reproducing the pricing-game experiment
 
-Overview and results: [`../README.md`](../README.md). Analysis plan:
+Paper: [`../paper.pdf`](../paper.pdf). Overview: [`../README.md`](../README.md). Analysis plan:
 [`prereg.md`](prereg.md). All parameters: `collusion/config/experiment.yaml`.
 
 ## Setup
@@ -38,13 +38,14 @@ bash serve/run_extraction.sh main_v1
 python tasks.py results
 ```
 
-Step 4 writes `results/effects.md`, `stage4.md`, `probes.md` (each with a
-`.json`), `judge_validation.md` and `results/figures/`. It runs on CPU.
+Step 4 writes `results/effects.md`, `stage4.md` (plus `stage4_t0.15` and
+`stage4_t0.5`), `probes.md` (each with a `.json`), `judge_validation.md`,
+`per_cell.md` and `results/figures/`. It runs on CPU.
 
 ## Data
 
-Generated data is not in git: `data/logs/` (turn logs), `data/episodes/`,
-`data/judge/`, `data/activations/`.
+In git: `data/episodes/` (one summary per episode). Not in git (too large):
+`data/logs/` (turn logs), `data/judge/`, `data/activations/`.
 
 - **Turn log**, one JSON line per seller per round: condition and seed, the full
   prompt and raw response, parsed price, plan, insight and message, reward,

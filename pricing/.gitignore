@@ -2,10 +2,8 @@
 __pycache__/
 *.pyc
 data/logs/*
-data/episodes/*
 data/activations/*
 !data/logs/.gitkeep
-!data/episodes/.gitkeep
 results/judge_validation_digest.md
 reports/
 .env

@@ -18,7 +18,8 @@
 * Figures in results/figures/: Delta per episode by cell, mean market price per
   period by cell, the cost map, and the quadrant shares.
 
-Writes results/stage4.md and results/stage4.json.
+Writes results/stage4.md and results/stage4.json; with a non-default
+`--threshold` (sensitivity, no figures), results/stage4_t<threshold>.md/.json.
 """
 
 from __future__ import annotations
@@ -297,12 +298,13 @@ def main(argv: list[str] | None = None) -> int:
     res["quadrants_note"] = judge_note
 
     out = ROOT / "results"
+    stem = "stage4" if args.threshold == 0.3 else f"stage4_t{args.threshold:g}"
     if not args.no_figures:
         keep = set(df.episode_id)
         traj = trajectories(args.run_id, keep)
         res["figures"] = figures(df, traj, res["cost_map"], res["quadrants"],
                                  info["benchmarks"], args.threshold, out / "figures")
-    (out / "stage4.json").write_text(json.dumps(res, indent=2))
+    (out / f"{stem}.json").write_text(json.dumps(res, indent=2))
 
     md = [f"# Stage 4 analyses: `{args.run_id}`", "",
           f"Episodes analysed: {info['episodes_analysed']} (same exclusions as results/effects.md).", "",
@@ -339,7 +341,7 @@ def main(argv: list[str] | None = None) -> int:
         md.append("")
     if "figures" in res:
         md += ["## Figures", ""] + [f"- `results/figures/{f}`" for f in res["figures"]]
-    (out / "stage4.md").write_text("\n".join(md), encoding="utf-8")
+    (out / f"{stem}.md").write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))
     return 0
 
