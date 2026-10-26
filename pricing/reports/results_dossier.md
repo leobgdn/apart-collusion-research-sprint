@@ -7,8 +7,9 @@ Target: a 4-8 page paper (8 pages hard cap, appendix not counted).
 
 - **Author:** Leó Bogdaneris.
 - **Repo:** `apart-collusion-research-sprint/pricing/`.
-- **Other tracks:** Track B (Colosseum) is a separate, self-contained
-  feasibility check in `colosseum/`. Nothing here depends on it.
+- **Colosseum:** evaluated first as "Plan A" and not adopted. It is now
+  dropped from the project. The paper mentions it in one or two sentences
+  only (wording in A21). Nothing here depends on it.
 - **Provenance:** every number below was produced by a script from the saved
   logs. Part B contains the script outputs verbatim. Part A summarises and
   explains them; if Part A and Part B ever disagree, Part B is right.
@@ -17,7 +18,10 @@ Target: a 4-8 page paper (8 pages hard cap, appendix not counted).
 
 Contents:
 
-- Part A: summary of the results and how to read them (sections A1-A17)
+- Part A: summary of the results and how to read them (sections A1-A26).
+  For writing, the most useful are A2 (numbers to cite), A16 (structure),
+  A22 (positioning vs prior work), A23 (safe and unsafe claims) and A25
+  (submission details still needed from the author).
 - Part B: verbatim script outputs and the per-cell master table
 
 ---
@@ -520,6 +524,29 @@ collusion.analysis.stage4`.
 | `cost_map.png` | change in Δ against change in joint profit, and against change in consumer surplus, per manipulation, with 95% CIs | main text or appendix |
 | `quadrants.png` | stacked shares of text/action quadrants per measure | appendix (a table may be clearer) |
 
+The images, inline (paths relative to this file):
+
+![Fig. 1: Δ per episode by cell](figures/delta_by_cell.png)
+
+![Fig. 2: mean market price per round](figures/price_trajectories.png)
+
+![Cost map: ΔΔ vs Δprofit and Δconsumer surplus](figures/cost_map.png)
+
+![Text/action quadrants](figures/quadrants.png)
+
+Draft captions (adjust to the final figure numbers):
+- **Fig. 1.** Collusion index Δ for each of the 446 analysed episodes, by
+  cell (50 seeds each). Markers are cell means. Dashed lines: Nash (Δ = 0),
+  the pre-registered label threshold (Δ = 0.3) and monopoly (Δ = 1).
+  Channel-on cells cluster at Δ ≈ 0.27, the 1.55 focal price.
+- **Fig. 2.** Mean market price per round, without (left) and with (right)
+  the private channel. With the channel, prices lock at 1.55 from round 2.
+  Without it, sellers undercut each other to below the Nash price (1.47).
+  The shaded band is the scored window (rounds 51-80).
+- **Cost map.** For each manipulation, the change in Δ against the change in
+  joint seller profit and in consumer surplus per period, with 95% CIs.
+  Every manipulation that raises Δ lowers consumer surplus.
+
 ## A16. Suggested paper structure (4-8 pages)
 
 1. **Introduction (0.5 p):** algorithmic collusion; LLM agents; the
@@ -728,6 +755,195 @@ reading list.
 - **Raw data** (not in git; too large): `data/logs/main_v1.jsonl` (72,000
   turns, 525 MB), `data/episodes/main_v1/`, `data/judge/main_v1.jsonl` and
   `data/activations/`.
+
+## A21. Project history: Colosseum (Plan A) was evaluated and not adopted
+
+The sprint spec (`SPEC.md`) named Colosseum (Nakamura et al. 2026) as
+**Plan A**. Its rule: switch to Plan B, a repeated pricing game, if Colosseum
+lacked usable multi-round history. What happened:
+
+1. **Code review (24 Oct):** Colosseum's collusion tasks are one-shot. Agents
+   deliberate on a blackboard, then make a single assignment, and
+   `max_iterations` is fixed at 1. There is no repeated interaction, so the
+   history factor (H2) can't be tested there. Plan B was built (the
+   environment of this paper).
+2. **Local feasibility check (24 Oct, 25 real episodes with local Qwen3-8B):**
+   - **Engineering passed:** it installs and runs locally; 844/844 logged
+     requests succeeded; 0 invalid decisions; about 42-102 s per episode.
+   - **No action-level collusion:** colluders never beat the no-channel
+     baseline on Colosseum's regret-advantage metric, under the `simple` or
+     `structured` coalition prompts, or at any task scarcity (8, 4 or 3
+     tasks for 4 agents). At the pre-registered calibration setting, the
+     channel arm scored 0/3 above threshold.
+   - **Why:** tasks are claimed one after another and everyone sees the
+     claims, so outcomes are set mainly by turn order. With 3 tasks, 2 of 3
+     seeds made identical assignments with and without the channel. The
+     only collusion lever left is misleading others during planning, and
+     colluders didn't use it: 1 public post across 9 channel runs.
+   - **Text, not action:** secret-board posts used coalition language ("Let's
+     coordinate to maximize our coalition's reward") with no collusive
+     action. This was eyeballed, not judged or quantified.
+   - Verdict: no-go for an action-level study. Dropped.
+
+**Suggested paper wording (methods, one or two sentences):** "We first piloted
+Colosseum (Nakamura et al., 2026), but its collusion tasks are one-shot
+(no interaction history), and in a 25-episode local check with Qwen3-8B,
+sequential, visible task claims left colluders no action-level lever (no
+episode beat the no-channel baseline). We therefore used a repeated pricing
+game." Don't present the Colosseum check as a finding about whether models
+collude; n is tiny and the environment gave no room to.
+
+Records: the Colosseum check report is in git history (commit `da11949`,
+`colosseum/reports/colosseum_check.md`); the Plan A decision is in
+`archive/DECISIONS.md` ("Plan A (Colosseum) checked and not adopted").
+
+## A22. Positioning against prior work
+
+How each result relates to the literature in A19 (numbers in brackets are A19
+entries):
+
+- **vs Fish et al. [2]** (the closest prior work): they show LLM pricing
+  agents reach supracompetitive prices and that prompt wording matters. This
+  study adds:
+  - (a) a **pre-registered, placebo-controlled factorial** (50 seeds per
+    cell) that separates three levers;
+  - (b) the finding that the channel works mainly by **ending a
+    below-Nash price war**, not by reaching monopoly;
+  - (c) a measured consumer-surplus cost;
+  - (d) text-, action- and activation-level monitoring in the same episodes.
+
+  Fish et al. also mention price wars, so (b) is a refinement, not a
+  contradiction. The model differs (open 8B vs GPT-4-class), and so does the
+  setting: here the no-channel baseline is *below* Nash.
+- **vs Calvano et al. [1] and Klein [6]:** Q-learning agents learn
+  collusion over many episodes. Here an LLM coordinates within 2 rounds when
+  it can talk, and the discrete menu (31 prices) matters, as in Klein. Focal
+  pricing at one menu step above Nash is a coordination outcome. Δ ≈ 0.27 is
+  well below the high profit gains Calvano et al. report for Q-learning;
+  check their exact figure before quoting it. Near-monopoly (Δ ≥ 0.6) is
+  rare here: 7 of 446 episodes (B5).
+- **vs Colosseum [3]:** their "collusion on paper" (collusive plans,
+  non-collusive actions) matches H5's direction in a different environment
+  (repeated pricing rather than one-shot allocation) and with a pre-registered
+  test: messages 186 vs 0 discordant episodes. Here the channel clearly
+  moves actions too (H1). The gap is in magnitude: the words read as cartel
+  agreement while prices sit at Δ ≈ 0.27.
+- **vs secret collusion and steganography [11, 12]:** those papers warn that
+  text monitors can be evaded. Here the opposite problem appears: the text
+  judge **over-flags** (36-51% of no-channel plans, 75% of placebo plans).
+  Both point to text monitoring alone being unreliable.
+- **vs CoT monitoring [14, 15]:** Baker et al. find that text (CoT) monitors
+  beat action-only monitors for reward hacking. Here, with thinking off, the
+  text judge is far weaker than both a price-history classifier and the
+  probes for predicting the action label (AUROC 0.56 vs 0.996 and 0.917).
+- **vs probe work [16-19]:** Goldowsky-Dill et al. report probe AUROCs of
+  0.96-0.999 for deception. Our probes reach similar AUROCs (0.92-0.98) but
+  **don't beat a 12-feature price baseline**, so high probe AUROC alone isn't
+  evidence of latent intent when the label is computable from the input. This
+  applies Hewitt & Liang's selectivity point [17] to a safety-monitoring
+  setting.
+- **vs LLM-as-judge [20, 21]:** a Qwen3-8B judge scoring Qwen3-8B text risks
+  self-preference. Its weak calibration (κ 0.31) is consistent with that
+  caution.
+- **Motivation:** multi-agent risk [10] and AI control [13] ask what an
+  overseer should watch. Assad et al. [7] and Harrington [8] show that
+  algorithmic collusion is a real-market and legal issue.
+
+## A23. Claims checklist (for the writer)
+
+**Safe (directly supported):**
+- The private channel raises Δ by +1.77 (pre-registered H1, Holm-corrected).
+- Longer history and long-run framing raise Δ slightly (+0.09, +0.15), and
+  both are significant.
+- These two effects come only from the no-channel cells; channel-on cells
+  are flat at Δ 0.23-0.29.
+- With the channel, 171 of 200 episodes lock at exactly 1.55 (one menu step
+  above Nash) from round 2.
+- Without it, median prices (1.05-1.15) are below Nash and consumers are
+  better off than at Nash.
+- Each lever that raises Δ lowers consumer surplus.
+- The cosmetic placebo has no detectable effect (p = 0.42).
+- Text-level collusion scores far exceed action-level ones (H5,
+  pre-registered and confirmatory, with the label-provenance wording below).
+- Probes detect the action label (AUROC 0.917 at 0.3, 0.977 at 0.15), far
+  above the shuffled control and the judge, but below a price-history
+  baseline. They fail the pre-registered "adds beyond price history" bar.
+
+**Not safe (avoid or qualify):**
+- "LLMs collude to monopoly prices": no. Δ ≈ 0.27, near-monopoly is rare.
+- "Communication causes collusion" without saying it mainly prevents a
+  sub-Nash price war: the channel effect on Δ is mostly from −1.5 up to
+  +0.27.
+- "Human-labelled judge validation": no. Say "LLM pre-labels (Claude),
+  reviewed in full by the author, 0 changes".
+- "Probes reveal hidden collusive intent": no. They don't beat visible
+  prices.
+- Generalising beyond Qwen3-8B, two sellers, thinking off, or this price
+  menu.
+- Any binary-label (Δ ≥ 0.3) result as strong: only 20 positives.
+- That the 0.3 threshold was chosen blind: the 1.55 focal price was already
+  visible in a pilot; this is disclosed in the prereg (A8).
+- Anything about Colosseum beyond the A21 wording.
+
+## A24. Glossary (for consistent terms)
+
+| term | meaning |
+|---|---|
+| Δ (collusion index) | profit-based: 0 = Nash, 1 = joint monopoly, averaged over rounds 51-80 and both sellers |
+| scored window | rounds 51-80 of 80 |
+| channel | a private message to the rival seller, seen the next round |
+| history window | rows of past prices shown: long = 10, short = 3 |
+| horizon | objective framing: long-run cumulative profit vs this period only |
+| placebo | cosmetic rewording of the intro, baseline cell only |
+| focal price | 1.55, where channel-on sellers settle |
+| text-level / action-level | judge score on what agents write / Δ from what they price |
+| plan / insight | private notes in each reply; the rival never sees them |
+| discordant episode | text and action labels disagree (used by McNemar) |
+| price-history baseline | logistic regression on 12 summary features of the prices shown in the prompt |
+
+## A25. Submission details still needed from the author
+
+These aren't in the repo; fill in or give them to the writing chat:
+
+- **Title.** Candidates:
+  - "Talking Their Way Out of a Price War: Communication, Collusion and
+    Monitoring in LLM Pricing Agents";
+  - "What LLM Pricing Agents Say, Do and Encode: A Pre-registered Study of
+    Collusion Levers";
+  - "Words, Prices and Activations: Monitoring Collusion between LLM Sellers".
+- **Author block:** name (Leó Bogdaneris), affiliation, contact; team
+  members if any.
+- **Event:** the Apart sprint's name and track, the submission template and
+  page rules (assumed: 4-8 pages, appendix not counted), and the required
+  sections (some Apart templates ask for limitations and dual-use or
+  ethics).
+- **Code and data availability:** the repo is **not public yet** (no
+  commits pushed). Decide whether to publish it. If so, the raw logs (525 MB)
+  and activations aren't in git and would need separate hosting, or a
+  statement that they are available on request.
+- **Your own reading list:** any papers you read that aren't in A19.
+- **Acknowledgements and AI-assistance disclosure:** the code, analysis and
+  this dossier were produced with Claude (Claude Code). The judge-validation
+  labels were LLM pre-labels (Claude) reviewed by the author. Check the
+  event's disclosure rules.
+
+## A26. Impact, ethics and dual use (facts for the section)
+
+- **Setting:** simulated market only; no real firms, prices or people; no
+  human subjects. All compute local; no external APIs.
+- **Dual use:** the results show which prompt features make LLM sellers
+  coordinate (a private channel above all). That could inform someone
+  deploying pricing agents, but the levers (letting rivals talk, long-run
+  framing) are already well known in antitrust, and their effects here are
+  modest apart from communication. The monitoring results (text over-flags;
+  probes don't beat visible prices) are mainly useful to overseers and
+  regulators.
+- **Policy-relevant reading:** allowing pricing agents to message rivals
+  ended a price war and cost consumers 0.42 surplus per period (about 40% of
+  the no-channel level of 0.97-1.12). That supports treating agent-to-agent
+  communication channels as the key thing to audit.
+- **Release:** no model weights were trained or released; probes are small
+  linear classifiers on one open model.
 
 ---
 
