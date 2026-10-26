@@ -919,8 +919,9 @@ These aren't in the repo; fill in or give them to the writing chat:
   page rules (assumed: 4-8 pages, appendix not counted), and the required
   sections (some Apart templates ask for limitations and dual-use or
   ethics).
-- **Code and data availability:** the repo is **not public yet** (no
-  commits pushed). Decide whether to publish it. If so, the raw logs (525 MB)
+- **Code and data availability:** the code is pushed to
+  github.com/leobgdn/apart-collusion-research-sprint (2026-10-25). Check
+  whether it is public before citing it as available. If so, the raw logs (525 MB)
   and activations aren't in git and would need separate hosting, or a
   statement that they are available on request.
 - **Your own reading list:** any papers you read that aren't in A19.
