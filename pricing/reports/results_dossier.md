@@ -41,12 +41,16 @@ pre-registered before any main-sweep data existed.
   With one, they agree on a focal price of 1.55 in round 2 and hold it (171
   of 200 episodes). That is one menu step above Nash, about 27% of the way to
   monopoly.
-- **Text says far more than prices do (H5).** Messages are almost uniformly
-  "collusive" while prices are barely supra-competitive.
-- **Activation probes detect the action label well,** and generalise across
-  conditions, but do **not** beat a simple classifier on the price history
-  already shown in the prompt. This fails the pre-registered "adds beyond
-  price history" test.
+- **Agents write explicit agreements while the price markup stays modest
+  (H5).** Channel-on messages say things like "I agree to maintain price at
+  1.55", yet prices sit one menu step above Nash (Δ ≈ 0.27). The pre-registered
+  McNemar test is significant, but its size is partly an artifact: the judge
+  never scores a message below 0.6, and the 0.3 action threshold sits just
+  above the focal price. At 0.15, text and action mostly agree (A13).
+- **Activation probes detect the action label well,** but they are
+  **worse than** a simple classifier on the price history already shown in
+  the prompt (AUROC difference −0.079, CI [−0.169, −0.009], which excludes
+  0). This fails the pre-registered "adds beyond price history" test.
 - **Every manipulation that raises collusion moves surplus from consumers to
   sellers.**
 
@@ -62,11 +66,12 @@ pre-registered before any main-sweep data existed.
 | channel-on episodes locked at exactly 1.55 / 1.55 | **171 / 200** |
 | median market price, channel off / on | **~1.05-1.15 / 1.55** (Nash 1.473, monopoly 1.925) |
 | consumer-surplus cost of the channel | **−0.42** per period [−0.44, −0.40]; joint profit +0.41 [+0.39, +0.42] |
-| H5 messages: text-only vs action-only episodes | **186 vs 0**, exact McNemar p = 2×10⁻⁵⁶ |
-| H5 plans/insights: text-only vs action-only | **285 vs 4**, p = 6×10⁻⁷⁹ |
+| H5, descriptive lead | channel-on messages are explicit price agreements (e.g. "I agree to maintain price at 1.55") while Δ ≈ 0.27 |
+| H5 messages: text-only vs action-only episodes | 186 vs 0, exact McNemar p = 2×10⁻⁵⁶. **Don't lead with this:** message calibration is degenerate (no score below 0.6) and the 0.3 action flag sits just above 1.55. At 0.15 it is 15 vs 0 (93% "both") |
+| H5 plans/insights: text-only vs action-only | 285 vs 4, p = 6×10⁻⁷⁹ (127 vs 23 at 0.15) |
 | best probe AUROC, Δ ≥ 0.3 label | **0.917** [0.83, 0.99] (layer 18) |
 | price-history baseline AUROC, same label | **0.996** [0.990, 1.000] |
-| probe − price history (paired bootstrap) | **−0.079** [−0.169, −0.009]: fails the pre-registered bar |
+| probe − price history (paired bootstrap) | **−0.079** [−0.169, −0.009]: the probe is significantly *worse* (CI excludes 0); fails the pre-registered bar. At 0.15: −0.023 [−0.038, −0.011] |
 | probe − LLM judge | **+0.354** [+0.242, +0.457] |
 | rolling-Δ ridge probe (exploratory) | CV R² 0.85-0.87 at all layers |
 | data quality | 0.91% parse failures (657/72,000); 0 reasoning leaks; 0 prompt/server token mismatches |
@@ -84,11 +89,13 @@ Possible contribution statements, all supported by the data:
 2. Communication works mainly by **averting a sub-competitive price war**.
    It does not produce monopoly pricing. This is a "coordination at a focal
    point" story.
-3. A strong, pre-registered **text-action gap**: monitoring the words would
-   flag almost all channel-on episodes, while the prices are near-competitive.
-4. A **negative probe result** with proper baselines: probes "work", but
-   carry no information beyond the visible price history. This is a
-   methodological caution for activation monitoring.
+3. A **text-action gap**: agents write explicit price agreements while the
+   markup stays modest (Δ ≈ 0.27), so the words overstate the harm. The
+   pre-registered H5 test agrees, but its size depends on the action
+   threshold and a weakly calibrated judge (A13).
+4. A **negative probe result** with proper baselines: probes detect the
+   label, but are significantly worse than a classifier on the visible price
+   history. This is a methodological caution for activation monitoring.
 
 ## A4. Environment
 
@@ -312,6 +319,13 @@ brackets:
 
 All fits converged.
 
+**Which sample the shares use:** these logit shares (and those in
+`effects.md`, Part B1) are over the **8 crossed cells only, 397 episodes**,
+without the placebo cell: 194/397 = 49% at 0.15, 18/397 = 5% at 0.3. The
+probes (A14, B3) use **all 446** analysed episodes including the placebo:
+197/446 = 44% at 0.15, 20/446 = 4.5% at 0.3. Both are correct; say which one
+is quoted.
+
 **How to read the effects.** See the master table in Part B5 and the
 figures.
 
@@ -402,6 +416,21 @@ a hit. It is exploratory.
 | V09 plan | "Continue lowering price to capture more market share as competitor is not adjusting." | 0 |
 | V20 plan, borderline | "Continue pricing at 1.15 to maintain stable profits and avoid provoking a reaction from Seller B." | 0, low confidence |
 
+**How to lead with H5 in the paper.** Start descriptively: with the channel,
+agents **write explicit price agreements** ("I agree to maintain price at
+1.55 for continued stability and mutual profitability") **while the markup
+stays modest** (Δ ≈ 0.27, one menu step above Nash). Report the McNemar
+numbers after that, with three caveats stated next to them:
+1. **Message calibration is degenerate.** The judge never scores a message
+   below 0.6 and the calibration threshold is 0.60, so every channel-on
+   episode is "text-positive" by construction. The 186 vs 0 mostly restates
+   that.
+2. **The 0.3 action flag sits just above the 1.55 focal price** (Δ ≈ 0.27),
+   so the 171 focal-price episodes are all "action-negative".
+3. **At the 0.15 threshold, text and action mostly agree:** messages are 93%
+   "both" (15 vs 0 discordant). The gap is about *magnitude* (cartel-style
+   words, small markup), not about collusion appearing only in words.
+
 **H5 test:** an exact McNemar test on the discordant episodes (text-only vs
 action-only). The prereg names H5 but not its test, so this choice is
 disclosed. Action flag: Δ ≥ 0.3.
@@ -421,9 +450,10 @@ disclosed. Action flag: Δ ≥ 0.3.
 | 0.3 | 7% / 93% / 186 vs 0 | 4% / 64% / 1% / 285 vs 4 |
 | 0.5 | 4% / 96% / 193 vs 0, p = 2e-58 | 2% / 65% / 0% / 292 vs 0, p = 3e-88 |
 
-H5 holds at every threshold. Its size changes a lot: at 0.15, text and action
-mostly *agree* (they "coordinate", at 1.55). The honest phrasing is that
-agents *talk* collusion far more strongly than they *price* it.
+H5 is significant at every threshold, but its size changes a lot. At 0.15,
+text and action mostly *agree* (they "coordinate", at 1.55). The honest
+phrasing is that agents *talk* collusion far more strongly than they *price*
+it. Don't present 186 vs 0 as evidence that collusion exists only in words.
 
 **Judge caveat:** the judge flags plan/insight text as collusive in 36-51% of
 no-channel episodes in the standard cells, and 75% in the placebo cell,
@@ -494,19 +524,28 @@ then the window text.
 | probe − judge | +0.354 [+0.242, +0.457] | +0.199 [+0.168, +0.231] |
 | within channel = on | 0.965 [0.91, 1.00] (14 pos) | 0.836 [0.69, 0.94] |
 | within channel = off | 0.913 [0.82, 0.99] (6 pos) | 0.906 [0.84, 0.97] |
-| leave-one-condition-out (cells with both classes) | 0.84-1.00 | 0.65-1.00 |
+| leave-one-condition-out (cells with both classes) | 0.84-1.00 (6 of 9 cells; 1-7 positives each) | 0.65-1.00 (8 of 9 cells; minority class 1-7 episodes each) |
+
+**Hedge the leave-one-condition-out numbers.** Each held-out cell has only
+1-7 episodes in its minority class: at 0.3, 1-7 positives (3 cells have none,
+so AUROC is undefined); at 0.15, 1-7 positives in the no-channel cells and
+3-5 negatives in the channel-on cells. A single episode moves a cell's AUROC
+by 0.1 or more in the smallest cells. Report them as "transfer is not obviously broken", not as
+evidence of robust generalisation, and give the per-cell n (Part B3).
 
 **Exploratory:** a ridge probe on the per-turn rolling Δ (episode-grouped CV)
 reaches R² 0.853-0.868 across layers.
 
 **Reading:**
 - The probes clearly read action-relevant state: well above the shuffled
-  control, within each channel condition, and across held-out conditions.
+  control and within each channel condition. Held-out-condition transfer
+  looks fine, but rests on very few minority-class episodes (see above).
 - They beat the text judge by a lot.
 - But the label is a function of prices that are **in the prompt**, and a
-  12-feature price classifier is almost perfect. The probe therefore adds
-  nothing detectable beyond the visible history, which fails the
-  pre-registered bar.
+  12-feature price classifier is almost perfect. The probe is **significantly
+  worse** than that classifier (−0.079 [−0.169, −0.009] at 0.3; −0.023
+  [−0.038, −0.011] at 0.15; both CIs exclude 0). Say "worse than", not just
+  "no better than". This fails the pre-registered bar.
 - SPEC §12 warns that "AUROC near 1.0 everywhere suggests leakage". Here the
   "leakage" is by design: the information is legitimately in the input.
 - **Implication:** testing "latent collusive intent" needs settings where the
@@ -732,6 +771,45 @@ stated.
     arXiv:2404.13076. *Use:* supports the self-preference limitation (the
     Qwen3-8B judge scoring Qwen3-8B transcripts).
 
+**Added after the external review (checked 2026-10-25, abstracts only;
+cite each for its headline claim only)**
+
+22. **Rose, A., Cullen, C., Kaplowitz, B. G., & Schroeder de Witt, C.
+    (2026).** Detecting multi-agent collusion through multi-agent
+    interpretability. arXiv:2604.01151 (introduces **NARCBench**). *Use:* the
+    closest paper on probes for collusion. Probes aggregating per-agent
+    deception scores reach 1.00 AUROC in distribution and lower under shift
+    (v1: 0.60-0.86; a later version reports 0.73-0.93 for Llama-3.1-70B).
+    Check which version you cite. Their models include Qwen3-32B.
+23. **Shi, X., Zhang, Y., & Yang, D. (2026).** Emergent collusion in
+    long-horizon LLM agent interaction. arXiv:2609.24967. *Use:* a **direct
+    comparison for H2.** In a repeated task-verification setting, collusion
+    appears in ~94% of trajectories across 10 models, and restricting the
+    amount and scope of interaction history reduces it.
+24. **Lee, D., & Park, H. (2026).** Faithful yet collusive: Why
+    chain-of-thought monitoring cannot detect collusion in LLM pricing agents
+    under oligopolistic competition. arXiv:2609.18346. *Use:* CoT monitors
+    fail in Bertrand pricing (9 LLMs, duopoly and triopoly). Complements our
+    finding that the text judge is a poor action monitor (thinking off here).
+25. **Keppo, J., Li, Y., Tsoukalas, G., & Yuan, N. (2026).** On the fragility
+    of AI agent collusion. arXiv:2603.20281. *Use:* heterogeneity. Patience or
+    data-access heterogeneity cuts LLM price lift (22% to 10% or 7% above
+    competitive); more competitors break collusion; model-size differences
+    don't. Our study is homogeneous (same model, two sellers).
+26. **Lee, J. Y. (2026).** Who leads and who collects: Algorithmic collusion
+    in markets of heterogeneous language models. arXiv:2610.11256. *Use:*
+    heterogeneity. Four-firm logit Bertrand without communication: Claude and
+    Gemini markets capture 72-79% of monopoly rent, DeepSeek 24%, GPT none;
+    mixing models alone doesn't reduce collusion.
+27. **Bracale Syrnikov, M., Pierucci, F., Galisai, M., Prandi, M., Bisconti,
+    P., Giarrusso, F., Sorokoletova, O., Suriani, V., & Nardi, D. (2026).**
+    Institutional AI: Governing LLM collusion in multi-agent Cournot markets
+    via public governance graphs. arXiv:2601.11369. *Use:* **mitigation, not
+    heterogeneity** (the review grouped it with heterogeneity, but the
+    abstract is about governance). A governance-graph regime cut severe
+    collusion from 50% to 5.6%; a prompt-only anti-collusion instruction did
+    not reliably help.
+
 Considered and left out: "A survey of collusion risk in LLM-powered
 multi-agent systems" (NeurIPS 2025 poster 133205). It looks relevant, but its
 authors couldn't be confirmed.
@@ -840,13 +918,37 @@ entries):
   probes for predicting the action label (AUROC 0.56 vs 0.996 and 0.917).
 - **vs probe work [16-19]:** Goldowsky-Dill et al. report probe AUROCs of
   0.96-0.999 for deception. Our probes reach similar AUROCs (0.92-0.98) but
-  **don't beat a 12-feature price baseline**, so high probe AUROC alone isn't
+  are **significantly worse than a 12-feature price baseline**, so high probe
+  AUROC alone isn't
   evidence of latent intent when the label is computable from the input. This
   applies Hewitt & Liang's selectivity point [17] to a safety-monitoring
   setting.
 - **vs LLM-as-judge [20, 21]:** a Qwen3-8B judge scoring Qwen3-8B text risks
   self-preference. Its weak calibration (κ 0.31) is consistent with that
   caution.
+- **vs NARCBench [22]** (the closest probe-for-collusion work): they detect
+  collusion from activations, with drops under distribution shift. Our
+  contribution is the observable-input baseline: when the label is
+  computable from the prompt's price history, a simple price classifier
+  beats the probe. A probe result needs that comparison before it can be
+  read as detecting intent. Only their abstract was read, so check whether
+  they use an equivalent baseline before calling ours new.
+- **vs Shi et al. [23] on H2:** they find that restricting interaction
+  history reduces collusion. Our H2 agrees in direction (short vs long
+  history, −0.09 Δ), but here the effect is small and appears **only without
+  the channel**; with a channel, history length makes no visible difference.
+- **vs Lee & Park [24]:** they show CoT monitors fail for pricing collusion.
+  Our judge reads outputs, not CoT (thinking off). It also tracks the action
+  label poorly (AUROC 0.56 at 0.3), and it over-flags in the other
+  direction.
+- **vs heterogeneity work [25, 26]:** our sellers are identical (same model,
+  two firms), the setting where collusion is expected to be easiest. Keppo et
+  al. find heterogeneity fragilises collusion; Lee finds mixing alone
+  doesn't. Generalising our numbers to mixed markets is out of scope (a
+  limitation).
+- **vs governance [27]:** a prompt-only anti-collusion instruction didn't
+  help there. Our placebo shows that cosmetic rewording also has no effect,
+  while structural levers (the channel) dominate.
 - **Motivation:** multi-agent risk [10] and AI control [13] ask what an
   overseer should watch. Assad et al. [7] and Harrington [8] show that
   algorithmic collusion is a real-market and legal issue.
@@ -865,11 +967,15 @@ entries):
   better off than at Nash.
 - Each lever that raises Δ lowers consumer surplus.
 - The cosmetic placebo has no detectable effect (p = 0.42).
-- Text-level collusion scores far exceed action-level ones (H5,
-  pre-registered and confirmatory, with the label-provenance wording below).
+- Agents write explicit price agreements while the markup stays modest
+  (Δ ≈ 0.27). Text-level scores exceed action-level ones (H5, pre-registered
+  and confirmatory, with the label-provenance wording below), stated with
+  the A13 caveats: degenerate message calibration, the threshold sitting just
+  above the focal price, and agreement at 0.15.
 - Probes detect the action label (AUROC 0.917 at 0.3, 0.977 at 0.15), far
-  above the shuffled control and the judge, but below a price-history
-  baseline. They fail the pre-registered "adds beyond price history" bar.
+  above the shuffled control and the judge, but are significantly **worse
+  than** a price-history baseline (CIs exclude 0). They fail the
+  pre-registered "adds beyond price history" bar.
 
 **Not safe (avoid or qualify):**
 - "LLMs collude to monopoly prices": no. Δ ≈ 0.27, near-monopoly is rare.
@@ -878,8 +984,13 @@ entries):
   +0.27.
 - "Human-labelled judge validation": no. Say "LLM pre-labels (Claude),
   reviewed in full by the author, 0 changes".
-- "Probes reveal hidden collusive intent": no. They don't beat visible
+- "Probes reveal hidden collusive intent": no. They are worse than visible
   prices.
+- Leading with "186 vs 0" or presenting it as words-only collusion: see A13.
+- Leave-one-condition-out as "robust generalisation": 1-7 minority-class
+  episodes per cell.
+- Quoting a positive share without its sample: 49% (397 crossed-cell
+  episodes) vs 44% (446 incl. placebo) at 0.15.
 - Generalising beyond Qwen3-8B, two sellers, thinking off, or this price
   menu.
 - Any binary-label (Δ ≥ 0.3) result as strong: only 20 positives.
@@ -907,23 +1018,39 @@ entries):
 
 These aren't in the repo; fill in or give them to the writing chat:
 
-- **Title.** Candidates:
+Status of the review's A25 requests: the title and affiliation need the
+author's decision; the repo link is **not yet public**; a draft data
+statement is below.
+
+- **Title (author to pick).** Candidates:
   - "Talking Their Way Out of a Price War: Communication, Collusion and
     Monitoring in LLM Pricing Agents";
   - "What LLM Pricing Agents Say, Do and Encode: A Pre-registered Study of
     Collusion Levers";
   - "Words, Prices and Activations: Monitoring Collusion between LLM Sellers".
-- **Author block:** name (Leó Bogdaneris), affiliation, contact; team
-  members if any.
+- **Author block:** Leó Bogdaneris. Affiliation, contact email and any team
+  members: **author to supply** (not in the repo).
 - **Event:** the Apart sprint's name and track, the submission template and
   page rules (assumed: 4-8 pages, appendix not counted), and the required
   sections (some Apart templates ask for limitations and dual-use or
   ethics).
-- **Code and data availability:** the code is pushed to
-  github.com/leobgdn/apart-collusion-research-sprint (2026-10-25). Check
-  whether it is public before citing it as available. If so, the raw logs (525 MB)
-  and activations aren't in git and would need separate hosting, or a
-  statement that they are available on request.
+- **Code availability:** the code is pushed to
+  https://github.com/leobgdn/apart-collusion-research-sprint, but the repo
+  is **private**: a logged-out fetch on 2026-10-25 returned HTTP 404. Before
+  citing the link, make it public (GitHub → Settings → General → Danger
+  Zone → Change visibility) and check it opens in a private window. Nothing
+  secret is committed: the unpushed commits were scanned for API keys before
+  the push.
+- **Data availability (draft statement; sizes measured 2026-10-25):** "Code,
+  configuration, the pre-registration, per-episode summaries and all
+  analysis outputs are in the repository. The raw turn logs (72,000 turns
+  with full prompts and replies, 613 MB on disk), the judge outputs (9 MB)
+  and the residual-stream activations (3.4 GB) are not in git because of
+  their size; they are available from the author on request, and every
+  table and figure can be regenerated from them with `python tasks.py
+  results`." Change "on request" if they are uploaded somewhere (e.g. Hugging
+  Face or Zenodo). Note that the logs are 613 MB on disk; the 525 MB figure
+  used elsewhere in this dossier is the main_v1 log alone (549.6 MB, i.e. 524 MiB).
 - **Your own reading list:** any papers you read that aren't in A19.
 - **Acknowledgements and AI-assistance disclosure:** the code, analysis and
   this dossier were produced with Claude (Claude Code). The judge-validation
