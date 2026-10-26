@@ -1,6 +1,0 @@
-# Colosseum clone: re-create with
-#   git clone --recurse-submodules https://github.com/umass-ai-safety/colosseum.git repo
-#   (cd repo && git checkout 0048f1b && uv venv --python 3.11 .venv && uv sync --no-install-project)
-repo/
-# Run artefacts and proxy logs (large; regenerate with scripts/)
-outputs/

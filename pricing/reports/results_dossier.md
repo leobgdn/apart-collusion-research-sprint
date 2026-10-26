@@ -793,9 +793,11 @@ episode beat the no-channel baseline). We therefore used a repeated pricing
 game." Don't present the Colosseum check as a finding about whether models
 collude; n is tiny and the environment gave no room to.
 
-Records: the Colosseum check report is in git history (commit `da11949`,
-`colosseum/reports/colosseum_check.md`); the Plan A decision is in
-`archive/DECISIONS.md` ("Plan A (Colosseum) checked and not adopted").
+Records (both folders have been removed from the repo; they're in git
+history only): the final Colosseum check report is at commit `78790d2`,
+`colosseum/reports/colosseum_check.md`. The Plan A decision is at commit
+`f09b4dc`, `archive/DECISIONS.md` ("Plan A (Colosseum) checked and not
+adopted").
 
 ## A22. Positioning against prior work
 
